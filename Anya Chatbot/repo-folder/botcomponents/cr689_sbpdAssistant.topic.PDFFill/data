@@ -1,0 +1,293 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - fill document
+      - complete document form
+      - document form filling
+      - document 
+      - fill out document
+
+  actions:
+    - kind: Question
+      id: question_jX08ua
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.docChoice
+      prompt: Which document would you like to fill out?
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: Copy Request
+              displayName: Copy Request
+
+            - id: Time Off Request
+              displayName: Time Off Request
+
+            - id: Transport Referral
+              displayName: Transport Referral
+
+    - kind: ConditionGroup
+      id: conditionGroup_bwPBVF
+      conditions:
+        - id: conditionItem_yUA1p1
+          condition: =Topic.docChoice = 'cr689_sbpdAssistant.topic.PDFFill.main.question_jX08ua'.'Copy Request'
+          actions:
+            - kind: SetVariable
+              id: setVariable_ZR8DZp
+              variable: Topic.PhoneNumber
+              value: 111-111-1111
+
+            - kind: Question
+              id: question_W9GAD1
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.PaymentChoice
+              prompt: Payment Information
+              entity:
+                kind: EmbeddedEntity
+                definition:
+                  kind: ClosedListEntity
+                  items:
+                    - id: Check
+                      displayName: Check
+
+                    - id: Credit Card - In Person
+                      displayName: Credit Card - In Person
+
+                    - id: Credit Card - Online
+                      displayName: Credit Card - Online
+
+            - kind: SetVariable
+              id: RulLNc
+              variable: Topic.Check
+              value: No
+
+            - kind: SetVariable
+              id: bTLIQP
+              variable: Topic.InPersonCreditCard
+              value: No
+
+            - kind: SetVariable
+              id: Ubz7Uf
+              variable: Topic.OnlineCreditCard
+              value: No
+
+            - kind: ConditionGroup
+              id: conditionGroup_PMUhG2
+              conditions:
+                - id: conditionItem_b2Fm38
+                  condition: =Topic.PaymentChoice = 'cr689_sbpdAssistant.topic.PDFFill.main.question_W9GAD1'.Check
+                  actions:
+                    - kind: SetVariable
+                      id: setVariable_jA0w5k
+                      variable: Topic.Check
+                      value: Yes
+
+                    - kind: Question
+                      id: question_WFuTmD
+                      interruptionPolicy:
+                        allowInterruption: true
+
+                      variable: init:Topic.CheckNum
+                      prompt: |-
+                        Please input **Check #**
+                        (Make check payable to: Clerk of the Court)
+                      entity: StringPrebuiltEntity
+
+                - id: conditionItem_GQPrx2
+                  condition: =Topic.PaymentChoice = 'cr689_sbpdAssistant.topic.PDFFill.main.question_W9GAD1'.'Credit Card - In Person'
+                  actions:
+                    - kind: SetVariable
+                      id: setVariable_4yVSq3
+                      variable: Topic.InPersonCreditCard
+                      value: Yes
+
+                - id: conditionItem_QYCIyv
+                  condition: =Topic.PaymentChoice = 'cr689_sbpdAssistant.topic.PDFFill.main.question_W9GAD1'.'Credit Card - Online'
+                  actions:
+                    - kind: SetVariable
+                      id: setVariable_wCCu7i
+                      variable: Topic.OnlineCreditCard
+                      value: Yes
+
+            - kind: ConditionGroup
+              id: conditionGroup_FrPYht
+              conditions:
+                - id: conditionItem_X3pEsX
+                  condition: =Topic.PaymentChoice <> 'cr689_sbpdAssistant.topic.PDFFill.main.question_W9GAD1'.Check
+                  displayName: Condition
+                  actions:
+                    - kind: SetVariable
+                      id: setVariable_8hTxUy
+                      variable: Topic.CheckNum
+                      value: Empty
+
+            - kind: Question
+              id: question_Hk3rAW
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.DeliveryChoice
+              prompt: Document Delivery
+              entity:
+                kind: EmbeddedEntity
+                definition:
+                  kind: ClosedListEntity
+                  items:
+                    - id: In Person
+                      displayName: In Person
+
+                    - id: Email
+                      displayName: Email
+
+                    - id: Mail
+                      displayName: Mail
+
+            - kind: SetVariable
+              id: setVariable_hDYGuj
+              variable: Topic.InPerson
+              value: No
+
+            - kind: SetVariable
+              id: setVariable_wOUOx5
+              variable: Topic.Email
+              value: No
+
+            - kind: SetVariable
+              id: setVariable_tD3Wo9
+              variable: Topic.Mail
+              value: No
+
+            - kind: ConditionGroup
+              id: conditionGroup_EIrQeo
+              conditions:
+                - id: conditionItem_KCxkoj
+                  condition: =Topic.DeliveryChoice = 'cr689_sbpdAssistant.topic.PDFFill.main.question_Hk3rAW'.'In Person'
+                  actions:
+                    - kind: SetVariable
+                      id: setVariable_CPcgq1
+                      variable: Topic.InPerson
+                      value: Yes
+
+                - id: conditionItem_2zEkiI
+                  condition: =Topic.DeliveryChoice = 'cr689_sbpdAssistant.topic.PDFFill.main.question_Hk3rAW'.Email
+                  actions:
+                    - kind: SetVariable
+                      id: setVariable_JKuJXm
+                      variable: Topic.Email
+                      value: Yes
+
+                    - kind: Question
+                      id: question_iKA5DR
+                      interruptionPolicy:
+                        allowInterruption: true
+
+                      variable: init:Topic.eAddress
+                      prompt: Please input **Email Address**
+                      entity: EmailPrebuiltEntity
+
+                - id: conditionItem_z6SsEq
+                  condition: =Topic.DeliveryChoice = 'cr689_sbpdAssistant.topic.PDFFill.main.question_Hk3rAW'.Mail
+                  actions:
+                    - kind: SetVariable
+                      id: setVariable_skPHpn
+                      variable: Topic.Mail
+                      value: Yes
+
+                    - kind: Question
+                      id: question_TxCprW
+                      interruptionPolicy:
+                        allowInterruption: true
+
+                      variable: init:Topic.mAddress
+                      prompt: Please input **Mailing Address**
+                      entity: StreetAddressPrebuiltEntity
+
+            - kind: ConditionGroup
+              id: conditionGroup_omJ7dM
+              conditions:
+                - id: conditionItem_N1ZE3X
+                  condition: =Topic.DeliveryChoice = 'cr689_sbpdAssistant.topic.PDFFill.main.question_Hk3rAW'.'In Person'
+                  actions:
+                    - kind: SetVariable
+                      id: setVariable_LX2ycs
+                      variable: Topic.eAddress
+                      value: Empty
+
+                    - kind: SetVariable
+                      id: setVariable_uJKDfT
+                      variable: Topic.mAddress
+                      value: Empty
+
+                - id: conditionItem_pgkNdy
+                  condition: =Topic.DeliveryChoice = 'cr689_sbpdAssistant.topic.PDFFill.main.question_Hk3rAW'.Email
+                  actions:
+                    - kind: SetVariable
+                      id: setVariable_scNig2
+                      variable: Topic.mAddress
+                      value: Empty
+
+                - id: conditionItem_UCQZEG
+                  condition: =Topic.DeliveryChoice = 'cr689_sbpdAssistant.topic.PDFFill.main.question_Hk3rAW'.Mail
+                  actions:
+                    - kind: SetVariable
+                      id: setVariable_3C8eTk
+                      variable: Topic.eAddress
+                      value: Empty
+
+            - kind: InvokeFlowAction
+              id: invokeFlowAction_fedIbK
+              input:
+                binding:
+                  text: =System.User.PrincipalName
+                  text_1: =Topic.Check
+                  text_10: =Topic.PhoneNumber
+                  text_2: =Topic.InPersonCreditCard
+                  text_3: =Topic.OnlineCreditCard
+                  text_4: =Topic.CheckNum
+                  text_5: =Topic.InPerson
+                  text_6: =Topic.Email
+                  text_7: =Topic.Mail
+                  text_8: =Topic.eAddress
+                  text_9: =Topic.mAddress
+
+              output:
+                binding:
+                  file: Topic.File
+
+              flowId: 75e5cca1-a0fb-ef11-bae2-7c1e520c2c51
+
+            - kind: SendActivity
+              id: sendActivity_Y1DUMM
+              activity: |-
+                Here is a link to your copy request.
+                
+                {Topic.File}
+
+            - kind: SendActivity
+              id: od5zcO
+              activity: A copy of your form has also been emailed to you! Thank you!
+
+        - id: conditionItem_S2I1EW
+          condition: =Topic.docChoice = 'cr689_sbpdAssistant.topic.PDFFill.main.question_jX08ua'.'Time Off Request'
+          actions:
+            - kind: BeginDialog
+              id: 7Fakvz
+              dialog: cr689_sbpdAssistant.topic.TimeOffRequestV2
+
+        - id: conditionItem_jk8rxx
+          condition: =Topic.docChoice = 'cr689_sbpdAssistant.topic.PDFFill.main.question_jX08ua'.'Transport Referral'
+          actions:
+            - kind: BeginDialog
+              id: 7zHpaw
+              dialog: cr689_sbpdAssistant.topic.TransportReferral
+
+inputType: {}
+outputType: {}

@@ -1,0 +1,213 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "cr689_sharedsharepointonline_dd1ff"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      },
+      "shared_translatorv2": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "cr689_sharedtranslatorv2_0a7b8"
+        },
+        "api": {
+          "name": "shared_translatorv2"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "b8f61c18-7224-4f8a-9c5f-72fbce5df764"
+          },
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "description": "Please enter your input",
+                  "title": "Text",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "description": "Please enter your input",
+                  "title": "Translate to",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_Copilot": {
+          "runAfter": {
+            "Condition": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "81c94f73-dd52-465c-ad3b-a4686da63cc3"
+          },
+          "type": "Response",
+          "kind": "Skills",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "translated": "@{body('Translate_text')}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "translated": {
+                  "title": "Translated",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Initialize_variable": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "5cc86b74-413f-43ad-b513-72481ce91dd1"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "languageCode",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Get_items": {
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1ab14888-0885-46e1-b5a8-bf96c86b2652"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/CopilotTest",
+              "table": "07a15d4a-e85a-4827-aac0-61578a68cb3b",
+              "$filter": "Title eq '@{toLower(trim(triggerBody()?['text_1']))}'"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition": {
+          "actions": {
+            "For_each": {
+              "foreach": "@outputs('Get_items')?['body/value']",
+              "actions": {
+                "Set_variable": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "3ec350a2-0adf-493e-b49a-1deb81ec7a48"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "languageCode",
+                    "value": "@items('For_each')?['field_1']"
+                  }
+                }
+              },
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "d152ab97-6df9-4513-bfdd-719231ae206b"
+              },
+              "type": "Foreach"
+            },
+            "Translate_text": {
+              "runAfter": {
+                "For_each": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "fb25f196-3d3b-4f81-b659-73d6e7492b78"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_translatorv2",
+                  "operationId": "Translate",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_translatorv2"
+                },
+                "parameters": {
+                  "to": "@variables('languageCode')",
+                  "body/Text": "@triggerBody()?['text']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Get_items": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@length(outputs('Get_items')?['body/value'])",
+                    0
+                  ]
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0833875c-3f8d-4782-88f7-307cc0fc341b"
+          },
+          "type": "If"
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": "8966f0978a80430098d992ce322095e3"
+  },
+  "schemaVersion": "1.0.0.0"
+}

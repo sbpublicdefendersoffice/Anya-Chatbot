@@ -1,0 +1,287 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "cr689_sharedsharepointonline_ffa9a"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "b8f61c18-7224-4f8a-9c5f-72fbce5df764"
+          },
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "description": "Please enter a number",
+                  "title": "TicketId",
+                  "type": "number",
+                  "x-ms-content-hint": "NUMBER",
+                  "x-ms-dynamically-added": true
+                },
+                "email": {
+                  "description": "Enter an email address.",
+                  "format": "email",
+                  "title": "UserEmail",
+                  "type": "string",
+                  "x-ms-content-hint": "EMAIL",
+                  "x-ms-dynamically-added": true
+                },
+                "text": {
+                  "description": "Please enter your input",
+                  "title": "Resolution",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "number",
+                "email",
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_items": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "ed529faa-2eb5-4e7c-9f67-17a13642a779"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline",
+              "operationId": "GetItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+              "table": "fbc5f533-d079-4680-ba84-3c3d41da8f05",
+              "$filter": "field_5 eq '@{triggerBody()?['email']}'"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition": {
+          "actions": {
+            "Respond_to_Copilot_1": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "3300b7ca-5c4f-4d04-88df-53c556ad546f"
+              },
+              "type": "Response",
+              "kind": "Skills",
+              "inputs": {
+                "statusCode": 200,
+                "body": {
+                  "response": "You (@{triggerBody()?['email']}) don't seem authorized to close tickets. Please contact IT if you think this is a mistake."
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "title": "Response",
+                      "x-ms-dynamically-added": true,
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Get_items": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Get_item": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "c63d8a1e-22db-407f-af2d-ca5a00a934d0"
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_sharepointonline",
+                    "operationId": "GetItem",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                  },
+                  "parameters": {
+                    "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+                    "table": "dacd0a04-a450-49f4-a2b3-d3d010ffd629",
+                    "id": "@triggerBody()?['number']"
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              },
+              "Condition_1": {
+                "actions": {
+                  "Respond_to_Copilot_2": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "388e51aa-1314-4c08-adac-27904ddbad26"
+                    },
+                    "type": "Response",
+                    "kind": "Skills",
+                    "inputs": {
+                      "statusCode": 200,
+                      "body": {
+                        "response": "Could not find an open ticket with ID @{triggerBody()?['number']}, the ticket may already be closed or does not exist."
+                      },
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "response": {
+                            "title": "Response",
+                            "x-ms-dynamically-added": true,
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "runAfter": {
+                  "Get_item": [
+                    "Succeeded"
+                  ]
+                },
+                "else": {
+                  "actions": {
+                    "Update_item": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "007a92e3-d34d-44c5-bcda-3c781c13777c"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_sharepointonline",
+                          "operationId": "PatchItem",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                        },
+                        "parameters": {
+                          "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+                          "table": "dacd0a04-a450-49f4-a2b3-d3d010ffd629",
+                          "id": "@outputs('Get_item')?['body/ID']",
+                          "item/Title": "@outputs('Get_item')?['body/Title']",
+                          "item/field_4": "@utcNow()",
+                          "item/field_5": "closed",
+                          "item/field_6": "@utcNow()",
+                          "item/field_7": "@triggerBody()?['text']",
+                          "item/field_16": "@first(outputs('Get_items')?['body/value']).ID"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    },
+                    "Respond_to_Copilot": {
+                      "runAfter": {
+                        "Update_item": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "81c94f73-dd52-465c-ad3b-a4686da63cc3"
+                      },
+                      "type": "Response",
+                      "kind": "Skills",
+                      "inputs": {
+                        "statusCode": 200,
+                        "body": {
+                          "response": "Ticket closed, thanks!"
+                        },
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "response": {
+                              "title": "Response",
+                              "x-ms-dynamically-added": true,
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "expression": {
+                  "or": [
+                    {
+                      "equals": [
+                        "@empty(outputs('Get_item'))",
+                        "@true"
+                      ]
+                    },
+                    {
+                      "equals": [
+                        "@outputs('Get_item')?['body/field_5']",
+                        "closed"
+                      ]
+                    }
+                  ]
+                },
+                "metadata": {
+                  "operationMetadataId": "e5a0e540-b2e2-4d29-9530-609b6f7bb7ab"
+                },
+                "type": "If"
+              }
+            }
+          },
+          "expression": {
+            "or": [
+              {
+                "equals": [
+                  "@empty(outputs('Get_items')?['body/value'])",
+                  "@true"
+                ]
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@first(outputs('Get_items')?['body/value'])['field_4']",
+                    "@'admin'"
+                  ]
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "82399df3-d07a-4961-b549-11a1cab03215"
+          },
+          "type": "If"
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": "8966f0978a80430098d992ce322095e3"
+  },
+  "schemaVersion": "1.0.0.0"
+}

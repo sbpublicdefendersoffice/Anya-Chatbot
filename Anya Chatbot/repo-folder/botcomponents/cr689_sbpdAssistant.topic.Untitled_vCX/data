@@ -1,0 +1,53 @@
+kind: AdaptiveDialog
+modelDescription: A user wants to close a ticket and provide a resolution text to justify.
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - I'd like to close a ticket
+      - Can you close a ticket
+      - Can I close a ticket
+      - close ticket
+      - I want to close a ticket
+
+  actions:
+    - kind: Question
+      id: question_yiiH8s
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.TicketID
+      prompt: What ticket number would you like to close?
+      entity: NumberPrebuiltEntity
+
+    - kind: Question
+      id: question_ZjEJaf
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.Resolution
+      prompt: And what is the resolution to this ticket (a brief explanation of why it's being closed)?
+      entity: StringPrebuiltEntity
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_f8XGlx
+      input:
+        binding:
+          email: =System.User.Email
+          number: =Topic.TicketID
+          text: =Topic.Resolution
+
+      output:
+        binding:
+          response: Topic.Response
+
+      flowId: f45df866-8f9d-ef11-8a69-6045bda7dacc
+
+    - kind: SendActivity
+      id: sendActivity_3M6QfW
+      activity: "{Topic.Response}"
+
+    - kind: BeginDialog
+      id: 3orDNe
+      dialog: cr689_sbpdAssistant.topic.ConversationStart

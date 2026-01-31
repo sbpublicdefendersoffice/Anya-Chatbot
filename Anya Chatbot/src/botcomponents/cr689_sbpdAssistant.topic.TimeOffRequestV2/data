@@ -1,0 +1,688 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - fill time off request form
+      - time off request form
+      - time off
+      - time off request
+
+  actions:
+    - kind: SetVariable
+      id: setVariable_IlmuHR
+      variable: Global.WorkdayStart
+      value: =Time(9, 0, 0)
+
+    - kind: SetVariable
+      id: setVariable_ZUdpj9
+      variable: Global.WorkdayEnd
+      value: =Time(17, 0, 0)
+
+    - kind: SetVariable
+      id: setVariable_FLbYuf
+      variable: Topic.Info
+      value: =""
+
+    - kind: SetVariable
+      id: setVariable_UEEy41
+      variable: Topic.count
+      value: 0
+
+    - kind: Question
+      id: question_cI4PgZ
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.Var6
+      prompt: Are you requesting to use county equipment during internation or out of state travel?
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: Yes
+              displayName: Yes
+
+            - id: No
+              displayName: No
+
+    - kind: SetVariable
+      id: setVariable_0kdJ5m
+      variable: Topic.Var3
+      value: 0
+
+    - kind: ConditionGroup
+      id: conditionGroup_Gs43rH
+      conditions:
+        - id: conditionItem_adZX1J
+          condition: =Topic.count <= 4
+          actions:
+            - kind: Question
+              id: question_m1RHhn
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.Var7
+              prompt: Are you requesting half day, full day or custom day and time?
+              entity:
+                kind: EmbeddedEntity
+                definition:
+                  kind: ClosedListEntity
+                  items:
+                    - id: Half Day
+                      displayName: Half Day
+
+                    - id: Full Day
+                      displayName: Full Day
+
+                    - id: Custom day and time
+                      displayName: Custom day and time
+
+            - kind: ConditionGroup
+              id: conditionGroup_XoRZoC
+              conditions:
+                - id: conditionItem_eZkl4z
+                  condition: =Topic.Var7 = 'cr689_sbpdAssistant.topic.TimeOffRequestV2.main.question_m1RHhn'.'Half Day'
+                  actions:
+                    - kind: Question
+                      id: question_fFMCfH
+                      interruptionPolicy:
+                        allowInterruption: true
+
+                      variable: init:Topic.Var10
+                      prompt: Morning to midday or midday until the end of the day?
+                      entity:
+                        kind: EmbeddedEntity
+                        definition:
+                          kind: ClosedListEntity
+                          items:
+                            - id: Morning to Midday
+                              displayName: Morning to Midday
+
+                            - id: Midday on
+                              displayName: Midday on
+
+                    - kind: ConditionGroup
+                      id: conditionGroup_0dxwfh
+                      conditions:
+                        - id: conditionItem_WxZgut
+                          condition: =Topic.Var10 = 'cr689_sbpdAssistant.topic.TimeOffRequestV2.main.question_fFMCfH'.'Morning to Midday'
+
+                        - id: conditionItem_V09YzL
+                          condition: =Topic.Var10 = 'cr689_sbpdAssistant.topic.TimeOffRequestV2.main.question_fFMCfH'.'Midday on'
+
+                    - kind: AdaptiveCardPrompt
+                      id: nxzXhO
+                      card: |-
+                        {
+                          "type": "AdaptiveCard",
+                          "version": "1.3",
+                          "body": [
+                            {
+                              "type": "TextBlock",
+                              "text": "Request Information"
+                            },
+                            {
+                              "type": "Input.Date",
+                              "id": "startDate",
+                              "label": "Start Date",
+                              "isRequired": true,
+                              "errorMessage": "Please enter Start Date."
+                            },
+                            {
+                              "type": "Input.ChoiceSet",
+                              "id": "LTC1",
+                              "label": "Select Leave Type",
+                              "style": "compact",
+                              "choices": [
+                                {
+                                  "title": "Out of Office Training",
+                                  "value": "TRNG"
+                                },
+                                {
+                                  "title": "Holiday Leave Balance",
+                                  "value": "HLB"
+                                },
+                                {
+                                  "title": "Sick or Medical/Dental appt for Employee",
+                                  "value": "SCK"
+                                },
+                                {
+                                  "title": "Other",
+                                  "value": "OTHER"
+                                }
+                              ],
+                              "isRequired": true,
+                              "errorMessage": "Please select a Leave Type."
+                            },
+                            {
+                              "type": "Input.ChoiceSet",
+                              "id": "LTC2",
+                              "label": "Or, an Alternate Leave Type (if Other)",
+                              "style": "compact",
+                              "choices": [
+                                {
+                                  "title": "Authorized Leave w/o Pay",
+                                  "value": "ALN"
+                                },
+                                {
+                                  "title": "Vacation",
+                                  "value": "VAC"
+                                },
+                                {
+                                  "title": "Extra-Help Sick",
+                                  "value": "ESK"
+                                },
+                                {
+                                  "title": "Jury Duty",
+                                  "value": "JUR"
+                                },
+                                {
+                                  "title": "Accrued Overtime Taken",
+                                  "value": "OTT"
+                                }, 
+                                {
+                                  "title": "Personal Sick Leave or Medical/Dental appt for Employee’s IMMEDIATE FAMILY MEMBER (family member name to be added to timesheet in comments)",
+                                  "value": "PSL"
+                                },
+                                {
+                                  "title": "Other Leave Paid, Explain Request",
+                                  "value": "OLV"
+                                }
+                              ],
+                              "isRequired": false
+                            },
+                            {
+                              "type": "ActionSet",
+                              "actions": [
+                                {
+                                  "type": "Action.Submit",
+                                  "title": "Submit",
+                                  "style": "positive"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      output:
+                        binding:
+                          actionSubmitId: Topic.actionSubmitId
+                          LTC1: Topic.LTC1
+                          LTC2: Topic.LTC2
+                          startDate: Topic.startDate
+
+                      outputType:
+                        properties:
+                          actionSubmitId: String
+                          LTC1: String
+                          LTC2: String
+                          startDate: Date
+
+                    - kind: SetVariable
+                      id: setVariable_9qs6bK
+                      variable: Topic.leaveTypeCode
+                      value: =If(IsBlank(Topic.LTC2), Topic.LTC1, Topic.LTC2)
+
+                    - kind: SetVariable
+                      id: setVariable_IU6nVf
+                      variable: Topic.Info
+                      value: |+
+                        =If(
+                            IsBlank(Topic.Info), 
+                            Topic.startDate & " " & Topic.startDate & " " & If(Text(Topic.Var10) = "Morning to midday", "Morning", "From-Midday") & " " & "half" & " " & 4 & " " & Topic.leaveTypeCode, 
+                            Topic.Info & " " & Topic.startDate & " " & Topic.startDate & " " & If(Text(Topic.Var10) = "Morning to midday", "Morning", "From-Midday") & " " & "half" & " " & 4 & " " & Topic.leaveTypeCode
+                        )
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+
+
+                - id: conditionItem_Ztwzoy
+                  condition: =Topic.Var7 = 'cr689_sbpdAssistant.topic.TimeOffRequestV2.main.question_m1RHhn'.'Full Day'
+                  actions:
+                    - kind: AdaptiveCardPrompt
+                      id: X21Iyk
+                      card: |-
+                        {
+                         "type": "AdaptiveCard",
+                         "version": "1.3",
+                         "body": [
+                           {
+                             "type": "TextBlock",
+                             "text": "Request Information"
+                           },
+                           {
+                             "type": "Input.Date",
+                             "id": "startDate",
+                             "label": "Start Date",
+                             "isRequired": true,
+                             "errorMessage": "Please enter Start Date."
+                           },
+                           {
+                             "type": "Input.ChoiceSet",
+                             "id": "LTC1",
+                             "label": "Select Leave Type",
+                             "style": "compact",
+                             "choices": [
+                               {
+                                 "title": "Out of Office Training",
+                                 "value": "TRNG"
+                               },
+                               {
+                                 "title": "Holiday Leave Balance",
+                                 "value": "HLB"
+                               },
+                               {
+                                 "title": "Sick or Medical/Dental appt for Employee",
+                                 "value": "SCK"
+                               },
+                               {
+                                 "title": "Other",
+                                 "value": "OTHER"
+                               }
+                             ],
+                             "isRequired": true,
+                             "errorMessage": "Please select a Leave Type."
+                           },
+                           {
+                             "type": "Input.ChoiceSet",
+                             "id": "LTC2",
+                             "label": "Or, an Alternate Leave Type (if Other)",
+                             "style": "compact",
+                             "choices": [
+                               {
+                                 "title": "Authorized Leave w/o Pay",
+                                 "value": "ALN"
+                               },
+                               {
+                                 "title": "Vacation",
+                                 "value": "VAC"
+                               },
+                               {
+                                 "title": "Extra-Help Sick",
+                                 "value": "ESK"
+                               },
+                               {
+                                 "title": "Jury Duty",
+                                 "value": "JUR"
+                               },
+                               {
+                                 "title": "Accrued Overtime Taken",
+                                 "value": "OTT"
+                               }, 
+                               {
+                                 "title": "Personal Sick Leave or Medical/Dental appt for Employee’s IMMEDIATE FAMILY MEMBER (family member name to be added to timesheet in comments)",
+                                 "value": "PSL"
+                               },
+                               {
+                                 "title": "Other Leave Paid, Explain Request",
+                                 "value": "OLV"
+                               }
+                             ],
+                             "isRequired": false
+                           },
+                           {
+                             "type": "ActionSet",
+                             "actions": [
+                               {
+                                 "type": "Action.Submit",
+                                 "title": "Submit",
+                                 "style": "positive"
+                               }
+                             ]
+                           }
+                         ]
+                        }
+                      output:
+                        binding:
+                          actionSubmitId: Topic.actionSubmitId
+                          LTC1: Topic.LTC1
+                          LTC2: Topic.LTC2
+                          startDate: Topic.startDate
+
+                      outputType:
+                        properties:
+                          actionSubmitId: String
+                          LTC1: String
+                          LTC2: String
+                          startDate: Date
+
+                    - kind: SetVariable
+                      id: setVariable_98vr6S
+                      variable: Topic.Var8
+                      value: =If(IsBlank(Topic.LTC2), Topic.LTC1, Topic.LTC2)
+
+                    - kind: SetVariable
+                      id: setVariable_TXp4Pp
+                      variable: Topic.Info
+                      value: |-
+                        =If(
+                            IsBlank(Topic.Info), 
+                            Topic.startDate & " " & Topic.startDate & " " & "full" & " " & "full" & " " & 8 & " " & Topic.Var8, 
+                            Topic.Info & " " & Topic.startDate & " " & Topic.startDate & " " & "full" & " " & "full" & " " & 8 & " " & Topic.Var8
+                        )
+
+                - id: conditionItem_GJP32g
+                  condition: =Topic.Var7 = 'cr689_sbpdAssistant.topic.TimeOffRequestV2.main.question_m1RHhn'.'Custom day and time'
+                  actions:
+                    - kind: AdaptiveCardPrompt
+                      id: FAMK1l
+                      card: |-
+                        {
+                          "type": "AdaptiveCard",
+                          "version": "1.3",
+                          "body": [
+                            {
+                              "type": "TextBlock",
+                              "text": "Request Information"
+                            },
+                            {
+                              "type": "Input.Date",
+                              "id": "startDate",
+                              "label": "Start Date",
+                              "isRequired": true,
+                              "errorMessage": "Please enter Start Date."
+                            },
+                            {
+                              "type": "Input.Date",
+                              "id": "endDate",
+                              "label": "End Date",
+                              "isRequired": true,
+                              "errorMessage": "Please enter End Date."
+                            },
+                            {
+                              "type": "Input.Time",
+                              "id": "startTime",
+                              "label": "Start Time",
+                              "isRequired": true,
+                              "errorMessage": "Please enter Start Time."
+                            },
+                            {
+                              "type": "Input.Time",
+                              "id": "endTime",
+                              "label": "End Time",
+                              "isRequired": true,
+                              "errorMessage": "Please enter End Time."
+                            },
+                            {
+                              "type": "Input.ChoiceSet",
+                              "id": "LTC1",
+                              "label": "Select Leave Type",
+                              "style": "compact",
+                              "choices": [
+                                {
+                                  "title": "Out of Office Training",
+                                  "value": "TRNG"
+                                },
+                                {
+                                  "title": "Holiday Leave Balance",
+                                  "value": "HLB"
+                                },
+                                {
+                                  "title": "Sick or Medical/Dental appt for Employee",
+                                  "value": "SCK"
+                                },
+                                {
+                                  "title": "Other",
+                                  "value": "OTHER"
+                                }
+                              ],
+                              "isRequired": true,
+                              "errorMessage": "Please select a Leave Type."
+                            },
+                            {
+                              "type": "Input.ChoiceSet",
+                              "id": "LTC2",
+                              "label": "Or, an Alternate Leave Type (if Other)",
+                              "style": "compact",
+                              "choices": [
+                                {
+                                  "title": "Authorized Leave w/o Pay",
+                                  "value": "ALN"
+                                },
+                                {
+                                  "title": "Vacation",
+                                  "value": "VAC"
+                                },
+                                {
+                                  "title": "Extra-Help Sick",
+                                  "value": "ESK"
+                                },
+                                {
+                                  "title": "Jury Duty",
+                                  "value": "JUR"
+                                },
+                                {
+                                  "title": "Accrued Overtime Taken",
+                                  "value": "OTT"
+                                }, 
+                                {
+                                  "title": "Personal Sick Leave or Medical/Dental appt for Employee’s IMMEDIATE FAMILY MEMBER (family member name to be added to timesheet in comments)",
+                                  "value": "PSL"
+                                },
+                                {
+                                  "title": "Other Leave Paid, Explain Request",
+                                  "value": "OLV"
+                                }
+                              ],
+                              "isRequired": false
+                            },
+                            {
+                              "type": "ActionSet",
+                              "actions": [
+                                {
+                                  "type": "Action.Submit",
+                                  "title": "Submit",
+                                  "style": "positive"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      output:
+                        binding:
+                          actionSubmitId: Topic.actionSubmitId
+                          endDate: Topic.endDate
+                          endTime: Topic.endTime
+                          LTC1: Topic.LTC1
+                          LTC2: Topic.LTC2
+                          startDate: Topic.startDate
+                          startTime: Topic.startTime
+
+                      outputType:
+                        properties:
+                          actionSubmitId: String
+                          endDate: Date
+                          endTime: Time
+                          LTC1: String
+                          LTC2: String
+                          startDate: Date
+                          startTime: Time
+
+                    - kind: SetVariable
+                      id: setVariable_ViqWNK
+                      variable: Topic.hourCount
+                      value: |-
+                        =If(
+                            Topic.startDate = Topic.endDate,
+                            DateDiff(Topic.startTime, Topic.endTime, TimeUnit.Hours),
+                            With({
+                                    startHours: DateDiff(Topic.startTime, Global.WorkdayEnd, TimeUnit.Hours),
+                                    endHours: DateDiff(Global.WorkdayStart, Topic.endTime, TimeUnit.Hours),
+                                    fullWeekdays: CountRows(
+                                        Filter(
+                                            Sequence(DateDiff(DateAdd(Topic.startDate, 1, TimeUnit.Days), Topic.endDate, TimeUnit.Days), 0, 1),
+                                            With({
+                                                weekday: Weekday(DateAdd(Topic.startDate, Value, TimeUnit.Days))
+                                            }, weekday >= 2 && weekday <= 6)
+                                        )
+                                    ),
+                                    hoursPerDay: DateDiff(Global.WorkdayStart, Global.WorkdayEnd, TimeUnit.Hours)
+                                },
+                                startHours + (hoursPerDay * fullWeekdays) + endHours
+                            )
+                        )
+
+                    - kind: SetVariable
+                      id: setVariable_ec4UI9
+                      variable: Topic.Var9
+                      value: =If(IsBlank(Topic.LTC2), Topic.LTC1, Topic.LTC2)
+
+                    - kind: SetVariable
+                      id: setVariable_F7eIIn
+                      variable: Topic.Info
+                      value: |-
+                        =If(
+                            IsBlank(Topic.Info), 
+                            Topic.startDate & " " & Topic.endDate & " " & Substitute(Topic.startTime, " ", "") & " " & Substitute(Topic.endTime, " ", "") & " " & Topic.hourCount & " " & Topic.Var9, 
+                            Topic.Info & " " & Topic.startDate & " " & Topic.endDate & " " & Substitute(Topic.startTime, " ", "") & " " & Substitute(Topic.endTime, " ", "") & " " & Topic.hourCount & " " & Topic.Var9
+                        )
+
+            - kind: SetVariable
+              id: setVariable_aRrgKf
+              variable: Topic.count
+              value: =Topic.count+1
+
+            - kind: Question
+              id: question_mu96gY
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.Var4
+              prompt:
+                text:
+                  - Are you requesting more time off?
+                  - Any more time off I should note?
+
+              entity:
+                kind: EmbeddedEntity
+                definition:
+                  kind: ClosedListEntity
+                  items:
+                    - id: Yes
+                      displayName: Yes
+
+                    - id: No
+                      displayName: No
+
+            - kind: ConditionGroup
+              id: conditionGroup_iCC0x2
+              conditions:
+                - id: conditionItem_6qdoPu
+                  condition: =Topic.Var4 = 'cr689_sbpdAssistant.topic.TimeOffRequestV2.main.question_mu96gY'.Yes
+                  actions:
+                    - kind: GotoAction
+                      id: RafZDj
+                      actionId: setVariable_0kdJ5m
+
+                - id: conditionItem_Xa8tL2
+                  condition: =Topic.Var4 = 'cr689_sbpdAssistant.topic.TimeOffRequestV2.main.question_mu96gY'.No
+
+      elseActions:
+        - kind: SendActivity
+          id: sendActivity_wpDxXG
+          activity: Sorry, can't add any more request information (the document is likely full).
+
+    - kind: Question
+      id: question_DUS15w
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.Var5
+      prompt: Do you have any comments or further explanation of the leave? If not, feel free to write "N/A."
+      entity: StringPrebuiltEntity
+
+    - kind: HttpRequestAction
+      id: PVUpTm
+      url: =Concatenate(Global.LDAPServer, "/search?q=", System.User.Email)
+      response: Topic.QueryResponse
+      responseSchema:
+        kind: Table
+        properties:
+          Department: String
+          Email: String
+          FirstName: String
+          FullName: String
+          JobTitle: String
+          LastName: String
+          Manager: String
+          ManagerDepartment: String
+          ManagerEmail: String
+          ManagerOffice: String
+          ManagerPhone: String
+          ManagerTitle: String
+          Office: String
+          Phone: String
+          Username: String
+
+    - kind: SetVariable
+      id: setVariable_hXOdpI
+      variable: Topic.SenderLocation
+      value: |-
+        =If(
+            Not(IsBlank(Topic.QueryResponse)),
+            First(Topic.QueryResponse).ManagerEmail,
+            System.User.Email
+        )
+
+    - kind: SendActivity
+      id: sendActivity_VDQbaX
+      activity: "{Topic.SenderLocation}"
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_jOucaq
+      input:
+        binding:
+          text: =System.User.PrincipalName
+          text_1: =Text(Now(),DateTimeFormat.ShortDate)
+          text_2: =Topic.Info
+          text_3: =Topic.Var5
+          text_4: =Text(Topic.Var6)
+          text_5: =Topic.SenderLocation
+
+      output: {}
+      flowId: 2ca8b85b-d3fe-ef11-bae2-7c1e520c2c51
+
+    - kind: SetVariable
+      id: setVariable_fQ0pzK
+      variable: Topic.Message
+      value: =Concatenate("The time-off request (+ filled form) have been sent to your", If(Topic.SenderLocation = System.User.Email, " email", " manager's email"), ".")
+
+    - kind: SendActivity
+      id: sendActivity_etDSWZ
+      activity: "{Topic.Message}"
+
+    - kind: BeginDialog
+      id: CFwMVB
+      dialog: cr689_sbpdAssistant.topic.ConversationStart
+
+inputType: {}
+outputType: {}

@@ -1,0 +1,4 @@
+<connectionreference logicalname="cr689_sharedtranslatorv2_0a7b8">
+  <connectionreferencedisplayname>Office 365 Users</connectionreferencedisplayname>
+  <connectorid>/providers/Microsoft.PowerApps/apis/shared_microsofttranslatorv2</connectorid>
+</connectionreference>

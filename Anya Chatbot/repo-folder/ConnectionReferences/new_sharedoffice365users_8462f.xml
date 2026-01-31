@@ -1,0 +1,4 @@
+<connectionreference logicalname="new_sharedoffice365users_8462f">
+  <connectionreferencedisplayname>Office 365 Users</connectionreferencedisplayname>
+  <connectorid>/providers/Microsoft.PowerApps/apis/shared_office365users</connectorid>
+</connectionreference>

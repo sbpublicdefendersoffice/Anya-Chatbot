@@ -1,0 +1,28 @@
+kind: AdaptiveDialog
+startBehavior: UseLatestPublishedContentAndCancelOtherTopics
+beginDialog:
+  kind: OnSystemRedirect
+  id: main
+  actions:
+    - kind: ConditionGroup
+      id: conditionGroup_2upKQX
+      conditions:
+        - id: conditionItem_uKgbJD
+          condition: =!IsBlank(Global.CancellationMessage)
+          actions:
+            - kind: SendActivity
+              id: sendActivity_eZNAJB
+              activity: "{Global.CancellationMessage}"
+
+            - kind: SetVariable
+              id: setVariable_qnqhLl
+              variable: Global.CancellationMessage
+              value: =""
+
+    - kind: ClearAllVariables
+      id: clearAllVariables_73bTFR
+      variables: ConversationScopedVariables
+
+    - kind: BeginDialog
+      id: AaQm8C
+      dialog: cr689_sbpdAssistant.topic.ConversationStart

@@ -1,0 +1,142 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnConversationStart
+  id: main
+  actions:
+    - kind: SetVariable
+      id: setVariable_mJ7X4v
+      variable: Global.LDAPServer
+      value: http://64.23.139.78:8000
+
+    - kind: Question
+      id: question_r3CtJU
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.Var1
+      prompt:
+        text:
+          - How can I help?
+          - What can I do for you?
+          - Let me know what I can do.
+          - How can I assist?
+          - Let me know how I can assist.
+
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: File Retrieval
+              displayName: File Retrieval
+
+            - id: Contact Retrieval
+              displayName: Contact Retrieval
+
+            - id: Ticket Inquiry
+              displayName: Ticket Inquiry
+
+            - id: Translate Text
+              displayName: Translate Text
+
+            - id: Time Off Request
+              displayName: Time Off Request
+
+            - id: Fillable Documents
+              displayName: Fillable Documents
+
+            - id: Supervisor Info
+              displayName: Supervisor Info
+
+    - kind: ConditionGroup
+      id: conditionGroup_CLpHz2
+      conditions:
+        - id: conditionItem_wSSc6K
+          condition: =Topic.Var1 = 'cr689_sbpdAssistant.topic.ConversationStart.main.question_r3CtJU'.'File Retrieval'
+          actions:
+            - kind: BeginDialog
+              id: dzoF8n
+              dialog: cr689_sbpdAssistant.topic.RetrieveFilewithGenerativeAI
+
+        - id: conditionItem_Tj8Km3
+          condition: =Topic.Var1 = 'cr689_sbpdAssistant.topic.ConversationStart.main.question_r3CtJU'.'Contact Retrieval'
+          actions:
+            - kind: BeginDialog
+              id: s1e2Xk
+              dialog: cr689_sbpdAssistant.topic.ContactRetrievalV4
+
+        - id: conditionItem_T14Zbk
+          condition: =Topic.Var1 = 'cr689_sbpdAssistant.topic.ConversationStart.main.question_r3CtJU'.'Ticket Inquiry'
+          actions:
+            - kind: Question
+              id: question_5SM7TH
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.Var2
+              prompt: Alright, what type of ticket inquiry do you have?
+              entity:
+                kind: EmbeddedEntity
+                definition:
+                  kind: ClosedListEntity
+                  items:
+                    - id: Make New Ticket
+                      displayName: Make New Ticket
+
+                    - id: Edit/Resume Ticket
+                      displayName: Edit/Resume Ticket
+
+                    - id: Close Ticket (Admin)
+                      displayName: Close Ticket (Admin)
+
+            - kind: ConditionGroup
+              id: conditionGroup_BYZk2v
+              conditions:
+                - id: conditionItem_Glmdrt
+                  condition: =Topic.Var2 = 'cr689_sbpdAssistant.topic.ConversationStart.main.question_5SM7TH'.'Make New Ticket'
+                  actions:
+                    - kind: BeginDialog
+                      id: 61iWPY
+                      dialog: cr689_sbpdAssistant.topic.CreateSimpleTicket
+
+                - id: conditionItem_lMkK1w
+                  condition: =Topic.Var2 = 'cr689_sbpdAssistant.topic.ConversationStart.main.question_5SM7TH'.'Close Ticket (Admin)'
+                  actions:
+                    - kind: BeginDialog
+                      id: JGKNsu
+                      dialog: cr689_sbpdAssistant.topic.Untitled_vCX
+
+                - id: conditionItem_OP6aRA
+                  condition: =Topic.Var2 = 'cr689_sbpdAssistant.topic.ConversationStart.main.question_5SM7TH'.'Edit/Resume Ticket'
+                  actions:
+                    - kind: BeginDialog
+                      id: 6gh6TB
+                      dialog: cr689_sbpdAssistant.topic.Untitled_Dot
+
+        - id: conditionItem_i955sF
+          condition: =Topic.Var1 = 'cr689_sbpdAssistant.topic.ConversationStart.main.question_r3CtJU'.'Translate Text'
+          actions:
+            - kind: BeginDialog
+              id: j6GsNt
+              dialog: cr689_sbpdAssistant.topic.Translate
+
+        - id: conditionItem_Qab3Gv
+          condition: =Topic.Var1 = 'cr689_sbpdAssistant.topic.ConversationStart.main.question_r3CtJU'.'Time Off Request'
+          actions:
+            - kind: BeginDialog
+              id: FcNxm8
+              dialog: cr689_sbpdAssistant.topic.TimeOffRequestV2
+
+        - id: conditionItem_1OeKiU
+          condition: =Topic.Var1 = 'cr689_sbpdAssistant.topic.ConversationStart.main.question_r3CtJU'.'Fillable Documents'
+          actions:
+            - kind: BeginDialog
+              id: AhNols
+              dialog: cr689_sbpdAssistant.topic.PDFFill
+
+        - id: conditionItem_Mv9Mz5
+          condition: =Topic.Var1 = 'cr689_sbpdAssistant.topic.ConversationStart.main.question_r3CtJU'.'Supervisor Info'
+          actions:
+            - kind: BeginDialog
+              id: qG7BWx
+              dialog: cr689_sbpdAssistant.topic.LDAP

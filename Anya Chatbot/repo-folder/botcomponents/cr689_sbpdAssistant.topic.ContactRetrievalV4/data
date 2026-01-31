@@ -1,0 +1,100 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - Contact Information
+      - Find the information from a user
+      - Get me a phone number
+      - Get me the email of a user
+      - I want to Teams a user
+
+  actions:
+    - kind: Question
+      id: question_wSkggg
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.Name
+      prompt: |-
+        Whose contact info would you like me to retreive?
+        
+        If entering a full name, please use this format: _**Last Name, First Name**_.
+      entity: StringPrebuiltEntity
+
+    - kind: SendActivity
+      id: sendActivity_66Jn7X
+      activity: |-
+        Give me a moment to look through Office 365...
+        
+        _This may take a moment, as the response may find users with the similar name_
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_14H6kE
+      input:
+        binding:
+          text: =Topic.Name
+
+      output:
+        binding:
+          output: Topic.output
+
+      flowId: fc31a118-75f0-ef11-9341-0022482ee71a
+
+    - kind: ConditionGroup
+      id: conditionGroup_RI1Roy
+      conditions:
+        - id: conditionItem_Hzlocd
+          condition: =IsBlank(Topic.output)
+          actions:
+            - kind: SendActivity
+              id: sendActivity_7NtVua
+              activity: |-
+                I couldn't find the contact information of
+                
+                "{Topic.Name}"
+
+            - kind: Question
+              id: question_sAVhQr
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.Var1
+              prompt: Would you like to try again or search a different name?
+              entity:
+                kind: EmbeddedEntity
+                definition:
+                  kind: ClosedListEntity
+                  items:
+                    - id: Yes
+                      displayName: Yes
+
+                    - id: No
+                      displayName: No
+
+                displayName: EmbeddedEntity-GAzBFS
+
+            - kind: ConditionGroup
+              id: conditionGroup_ZZpmGa
+              conditions:
+                - id: conditionItem_NaI6qg
+                  condition: =Topic.Var1 = 'cr689_sbpdAssistant.topic.ContactRetrievalV4.main.question_sAVhQr'.Yes
+                  actions:
+                    - kind: GotoAction
+                      id: Czhhb2
+                      actionId: question_wSkggg
+
+                - id: conditionItem_YxdGT6
+                  condition: =Topic.Var1 = 'cr689_sbpdAssistant.topic.ContactRetrievalV4.main.question_sAVhQr'.No
+
+      elseActions:
+        - kind: SendActivity
+          id: sendActivity_Aealfi
+          activity: |-
+            Here is the contact information of {Topic.Name}:
+            {Topic.output}
+
+    - kind: BeginDialog
+      id: uzGnH4
+      dialog: cr689_sbpdAssistant.topic.ConversationStart

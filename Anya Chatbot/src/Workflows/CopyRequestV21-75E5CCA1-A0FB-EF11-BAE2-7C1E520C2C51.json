@@ -1,0 +1,605 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_office365users": {
+        "api": {
+          "name": "shared_office365users"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365users_8462f"
+        },
+        "runtimeSource": "invoker"
+      },
+      "shared_sharepointonline": {
+        "api": {
+          "name": "shared_sharepointonline"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_4776c"
+        },
+        "runtimeSource": "invoker"
+      },
+      "shared_office365": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_369b1"
+        },
+        "runtimeSource": "invoker"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "description": "Please enter your input",
+                  "title": "Email",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "description": "Please enter your input",
+                  "title": "check",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_2": {
+                  "description": "Please enter your input",
+                  "title": "cc",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_3": {
+                  "description": "Please enter your input",
+                  "title": "online cc",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_4": {
+                  "description": "Please enter your input",
+                  "title": "check num",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_5": {
+                  "description": "Please enter your input",
+                  "title": "in person",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_6": {
+                  "description": "Please enter your input",
+                  "title": "email address",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_7": {
+                  "description": "Please enter your input",
+                  "title": "mail to",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_8": {
+                  "description": "Please enter your input",
+                  "title": "e address",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_9": {
+                  "description": "Please enter your input",
+                  "title": "m address",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_10": {
+                  "description": "Please enter your input",
+                  "title": "PhoneNumber",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "text_2",
+                "text_3",
+                "text_4",
+                "text_5",
+                "text_6",
+                "text_7",
+                "text_8",
+                "text_9",
+                "text_10"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "b8f61c18-7224-4f8a-9c5f-72fbce5df764"
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_Copilot": {
+          "type": "Response",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "file": {
+                  "title": "File",
+                  "description": "",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "file": "@{variables('File')}"
+            }
+          },
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "81c94f73-dd52-465c-ad3b-a4686da63cc3"
+          }
+        },
+        "Get_user_profile_(V2)": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "id": "@triggerBody()?['text']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+              "operationId": "UserProfile_V2",
+              "connectionName": "shared_office365users"
+            }
+          },
+          "runAfter": {
+            "Check_if_M_Address_is_Empty": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_files_(properties_only)": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/CopilotTest",
+              "table": "4c8bf58f-86db-4e1c-b2df-866c7da94166"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetFileItems",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Get_user_profile_(V2)": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Compose": {
+          "type": "Compose",
+          "inputs": "@length(outputs('Get_files_(properties_only)')?['body/value'])",
+          "runAfter": {
+            "Get_files_(properties_only)": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_file_content_using_path": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/CopilotTest",
+              "path": "/CopyRequest/CopyRequestTemplate1.docx",
+              "inferContentType": true
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetFileContentByPath",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "fileName",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_file_content_using_path": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "greaterOrEquals": [
+                  "@outputs('Compose')",
+                  2
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Append_to_string_variable": {
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "fileName",
+                "value": "@{outputs('Get_user_profile_(V2)')?['body/displayName']} CopyRequest@{formatDateTime(utcNow(), 'yyyyMMddTHHmmss')}.docx"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Create_file": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/CopilotTest",
+              "folderPath": "/CopyRequest",
+              "name": "@variables('fileName')",
+              "body": "@body('Get_file_content_using_path')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "CreateFile",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Condition": [
+              "Succeeded"
+            ]
+          },
+          "runtimeConfiguration": {
+            "contentTransfer": {
+              "transferMode": "Chunked"
+            }
+          }
+        },
+        "For_each": {
+          "type": "Foreach",
+          "foreach": "@outputs('Get_files_(properties_only)')?['body/value']",
+          "actions": {
+            "Update_file_properties": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://csula.sharepoint.com/sites/CopilotTest",
+                  "table": "4c8bf58f-86db-4e1c-b2df-866c7da94166",
+                  "id": "@outputs('Create_file')?['body/ItemId']",
+                  "item/Requestor": "@outputs('Get_user_profile_(V2)')?['body/displayName']",
+                  "item/Date1": "@formatDateTime(utcNow(), 'MM/dd/yyyy')",
+                  "item/RequestorEmail": "@outputs('Get_user_profile_(V2)')?['body/userPrincipalName']",
+                  "item/RequestorPhoneNum": "@triggerBody()?['text_10']",
+                  "item/check": "@if(equals(toLower(triggerBody()?['text_1']), 'yes'), '☑', '☐')",
+                  "item/CheckNum": "@variables('CheckNum')",
+                  "item/CreditCardInPerson": "@if(equals(toLower(triggerBody()?['text_2']), 'yes'), '☑', '☐')",
+                  "item/eAddress": "@variables('eAddress')",
+                  "item/Email": "@outputs('Get_user_profile_(V2)')?['body/userPrincipalName']",
+                  "item/EmailAddress": "@if(equals(toLower(triggerBody()?['text_6']), 'yes'), '☑', '☐')",
+                  "item/InPerson": "@if(equals(toLower(triggerBody()?['text_5']), 'yes'), '☑', '☐')",
+                  "item/mAddress": "@variables('mAddress')",
+                  "item/MailTo": "@if(equals(toLower(triggerBody()?['text_7']), 'yes'), '☑', '☐')",
+                  "item/CreditCardOnline": "@if(equals(toLower(triggerBody()?['text_3']), 'yes'), '☑', '☐')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PatchFileItem",
+                  "connectionName": "shared_sharepointonline"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Create_file": [
+              "Succeeded"
+            ]
+          }
+        },
+        "CheckNum": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CheckNum",
+                "type": "string",
+                "value": "@triggerBody()?['text_4']"
+              }
+            ]
+          },
+          "runAfter": {}
+        },
+        "Check_if_CheckNum_is_Empty": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@variables('CheckNum')",
+                  "Empty"
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Empty_CheckNum": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "CheckNum",
+                "value": "@string('_')"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "CheckNum": [
+              "Succeeded"
+            ]
+          }
+        },
+        "E_Address": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "eAddress",
+                "type": "string",
+                "value": "@triggerBody()?['text_8']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Check_if_CheckNum_is_Empty": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Check_if_E_Address_is_Empty": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerBody()?['text_8']",
+                  "Empty"
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Empty_E_Address": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "eAddress",
+                "value": "@string('_')"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "E_Address": [
+              "Succeeded"
+            ]
+          }
+        },
+        "m_Address": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "mAddress",
+                "type": "string",
+                "value": "@triggerBody()?['text_9']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Check_if_E_Address_is_Empty": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Check_if_M_Address_is_Empty": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerBody()?['text_9']",
+                  "Empty"
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Empty_M_Address": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "mAddress",
+                "value": "@string('_')"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "m_Address": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_files_(properties_only)_1": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/CopilotTest",
+              "table": "4c8bf58f-86db-4e1c-b2df-866c7da94166",
+              "$filter": "substringof('@{outputs('Create_file')?['body/Name']}', FileLeafRef)"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetFileItems",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "For_each": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_file_content": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/CopilotTest",
+              "id": "@outputs('Create_file')?['body/Id']",
+              "inferContentType": true
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetFileContent",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Get_files_(properties_only)_1": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Send_an_email_(V2)": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "emailMessage/To": "@outputs('Get_user_profile_(V2)')?['body/userPrincipalName']",
+              "emailMessage/Subject": "Copy Request Form",
+              "emailMessage/Body": "<p class=\"editor-paragraph\">Hello,</p><p class=\"editor-paragraph\">Attached is your Copy Request Form</p>",
+              "emailMessage/Attachments": [
+                {
+                  "Name": "@variables('fileName')",
+                  "ContentBytes": "@body('Get_file_content')"
+                }
+              ],
+              "emailMessage/Importance": "Normal"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+              "operationId": "SendEmailV2",
+              "connectionName": "shared_office365"
+            }
+          },
+          "runAfter": {
+            "Get_file_content": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_variable_4": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "File",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Send_an_email_(V2)": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Apply_to_each": {
+          "type": "Foreach",
+          "foreach": "@outputs('Get_files_(properties_only)_1')?['body/value']",
+          "actions": {
+            "Append_to_string_variable_2": {
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "File",
+                "value": "<a href=\"@{item()?['{Link}']}\">@{item()?['{FilenameWithExtension}']}</a>"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_4": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

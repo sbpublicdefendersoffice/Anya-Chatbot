@@ -1,0 +1,5 @@
+<botcomponent_msdyn_aimodelset>
+  <botcomponent_msdyn_aimodel botcomponentid.schemaname="cr689_sbpdAssistant.topic.CreateSimpleTicket" msdyn_aimodelid.msdyn_aimodelid="eb43c678-3a63-46bd-abb4-6ed8354671b7">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_msdyn_aimodel>
+</botcomponent_msdyn_aimodelset>

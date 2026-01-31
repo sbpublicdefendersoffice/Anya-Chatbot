@@ -1,0 +1,22 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnSignIn
+  id: main
+  actions:
+    - kind: ConditionGroup
+      id: conditionGroup_ypjGKL
+      conditions:
+        - id: conditionItem_7XYIIR
+          condition: =System.SignInReason = SignInReason.SignInRequired
+          actions:
+            - kind: SendActivity
+              id: sendMessage_1jHUNO
+              activity: |-
+                Hello! To be able to help you, I'll need you to sign in.
+                
+                _Just so you are aware, I sometimes use generative AI to answer questions. Make sure to check all information before using._
+
+    - kind: OAuthInput
+      id: gOjhZA
+      title: Login
+      text: To continue, please login

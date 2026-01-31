@@ -1,0 +1,953 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "api": {
+          "name": "shared_sharepointonline"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_48c71"
+        },
+        "runtimeSource": "invoker"
+      },
+      "shared_office365users": {
+        "api": {
+          "name": "shared_office365users"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365users_7e0ab"
+        },
+        "runtimeSource": "invoker"
+      },
+      "shared_office365": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_19e68"
+        },
+        "runtimeSource": "invoker"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "description": "Please enter your email",
+                  "title": "Email",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "description": "Please enter date (MM/DD/YYYY)",
+                  "title": "Date Submitted",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_2": {
+                  "description": "Please enter your input",
+                  "title": "Info",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_3": {
+                  "description": "Please enter your input",
+                  "title": "Comments",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_4": {
+                  "description": "Please enter yes or no",
+                  "title": "County Equipment",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_5": {
+                  "description": "Please enter your input",
+                  "title": "Sender Email",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "text_2",
+                "text_3",
+                "text_4",
+                "text_5"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "b8f61c18-7224-4f8a-9c5f-72fbce5df764"
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_Copilot": {
+          "type": "Response",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {}
+          },
+          "runAfter": {
+            "Send_an_email_(V2)_1": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "81c94f73-dd52-465c-ad3b-a4686da63cc3"
+          }
+        },
+        "Initialize_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "arr",
+                "type": "array",
+                "value": []
+              }
+            ]
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "9d7f9e67-d42e-41a7-9db9-839991418b70"
+          }
+        },
+        "Compose": {
+          "type": "Compose",
+          "inputs": "@split(triggerBody()?['text_2'], ' ')",
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "45e308d1-f662-4cad-91c3-43f0bee5e8c6"
+          }
+        },
+        "Compose_1": {
+          "type": "Compose",
+          "inputs": "@div(length(outputs('Compose')), 6)",
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5f3b6466-b63c-473d-9c8a-d5dc6533c6ba"
+          }
+        },
+        "Initialize_variable_1": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "str",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Compose_1": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0587974b-0022-4d7c-8afc-7d3ec07078dc"
+          }
+        },
+        "Get_files_(properties_only)": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+              "table": "65eb2800-399d-4cec-aabd-27bf5b5843a3",
+              "$filter": "substringof('@{outputs('Get_user_profile_(V2)')?['body/givenName']} @{outputs('Get_user_profile_(V2)')?['body/surname']}', FileLeafRef)"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetFileItems",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Get_user_profile_(V2)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bd9a845b-0c66-4357-8515-55fbea4338e3"
+          }
+        },
+        "Compose_2": {
+          "type": "Compose",
+          "inputs": "@length(outputs('Get_files_(properties_only)')?['body/value'])",
+          "runAfter": {
+            "Get_files_(properties_only)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5f768c48-4c98-4bc7-bdd1-26bb00a2cfcb"
+          }
+        },
+        "Get_file_content_using_path": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+              "path": "/TimeOffRequest/Time Off Template 5.docx",
+              "inferContentType": true
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetFileContentByPath",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Compose_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "83574d4c-954d-4852-a577-d59acb43acaf"
+          }
+        },
+        "Initialize_variable_2": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "fileName",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_file_content_using_path": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "997560c3-e9d9-405c-9026-9f5f9710ff0d"
+          }
+        },
+        "Condition": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Compose_2')",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Append_to_string_variable": {
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "fileName",
+                "value": "@{outputs('Get_user_profile_(V2)')?['body/givenName']} @{outputs('Get_user_profile_(V2)')?['body/surname']} Time Off Request.docx"
+              },
+              "metadata": {
+                "operationMetadataId": "9eb02702-b4c6-4e84-9da6-84b0167a94b7"
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Append_to_string_variable_1": {
+                "type": "AppendToStringVariable",
+                "inputs": {
+                  "name": "fileName",
+                  "value": "@concat(outputs('Get_user_profile_(V2)')?['body/givenName'], ' ', outputs('Get_user_profile_(V2)')?['body/surname'], ' Time Off Request ', add(outputs('Compose_2'), 1), '.docx')"
+                },
+                "metadata": {
+                  "operationMetadataId": "ff114f99-b50c-4ad0-9e8e-b4ca9cff8b98"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "45a2b15c-ac13-4d87-b3dc-619c2c79c188"
+          }
+        },
+        "Create_file": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+              "folderPath": "/TimeOffRequest",
+              "name": "@variables('fileName')",
+              "body": "@body('Get_file_content_using_path')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "CreateFile",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Condition": [
+              "Succeeded"
+            ]
+          },
+          "runtimeConfiguration": {
+            "contentTransfer": {
+              "transferMode": "Chunked"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "975d6d99-7b89-4db2-a682-3a115741d316"
+          }
+        },
+        "Apply_to_each": {
+          "type": "Foreach",
+          "foreach": "@outputs('Compose')",
+          "actions": {
+            "Append_to_array_variable": {
+              "type": "AppendToArrayVariable",
+              "inputs": {
+                "name": "arr",
+                "value": "@items('Apply_to_each')"
+              },
+              "metadata": {
+                "operationMetadataId": "58c83943-5ae1-422e-bec4-58929f26cb79"
+              }
+            }
+          },
+          "runAfter": {
+            "Create_file": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9a56e8f9-26aa-421b-9dea-8e4777cb3441"
+          }
+        },
+        "Condition_1": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Compose_1')",
+                  1
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Update_file_properties": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+                  "table": "65eb2800-399d-4cec-aabd-27bf5b5843a3",
+                  "id": "@outputs('Create_file')?['body/ItemId']",
+                  "item/EmployeeName": "@{outputs('Get_user_profile_(V2)')?['body/givenName']} @{outputs('Get_user_profile_(V2)')?['body/surname']}",
+                  "item/DateSubmitted": "@triggerBody()?['text_1']",
+                  "item/StartDate1": "@variables('arr')[0]",
+                  "item/EndDate1": "@variables('arr')[1]",
+                  "item/StartTime": "@if(equals(variables('arr')[2], 'Morning'), 'Morning', if(equals(variables('arr')[2], 'Noon'), 'Noon', if(equals(variables('arr')[2], 'full'), 'Full Day', variables('arr')[2])))\r\n",
+                  "item/EndTime": "@if(equals(variables('arr')[3], 'half'), 'Half Day', if(equals(variables('arr')[3], 'full'), 'Full Day', variables('arr')[3]))\r\n",
+                  "item/Hrs": "@variables('arr')[4]",
+                  "item/LTC/Value": "@variables('arr')[5]",
+                  "item/StartDate2": " ",
+                  "item/EndDate2": " ",
+                  "item/StartTime2": " ",
+                  "item/EndTime2": " ",
+                  "item/OData__x0048_rs2": " ",
+                  "item/OData__x004c_TC2/Value": "PLEASE SELECT",
+                  "item/StartDate3": " ",
+                  "item/EndDate3": " ",
+                  "item/StartTime3": " ",
+                  "item/EndTime3": " ",
+                  "item/OData__x0048_rs3": " ",
+                  "item/OData__x004c_TC3/Value": "PLEASE SELECT",
+                  "item/StartDate4": " ",
+                  "item/EndDate4": " ",
+                  "item/StartTime4": " ",
+                  "item/EndTime4": " ",
+                  "item/OData__x0048_rs4": " ",
+                  "item/OData__x004c_TC4/Value": "PLEASE SELECT",
+                  "item/StartDate5": " ",
+                  "item/EndDate5": " ",
+                  "item/StartTime5": " ",
+                  "item/EndTime5": " ",
+                  "item/OData__x0048_rs5": " ",
+                  "item/OData__x004c_TC5/Value": "PLEASE SELECT",
+                  "item/CommentsExplanation": "@triggerBody()?['text_3']",
+                  "item/CheckBox": "@if(equals(toLower(triggerBody()?['text_4']), 'yes'), '☑', '☐')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PatchFileItem",
+                  "connectionName": "shared_sharepointonline"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "44fe94d1-7042-4e5e-a649-697717e95354"
+              }
+            },
+            "Append_to_string_variable_2": {
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "table",
+                "value": "<table border=\"1\" style=\"border-collapse: collapse; width: 100%; text-align: center;\"> \n <thead>\n        <tr style=\"background-color: lightgray;\">\n               <th colspan=\"2\">Dates Requested</th>\n               <th colspan=\"2\">Times Requested</th>\n               <th>Total Hours</th>\n               <th>Leave Type Code</th>\n        </tr>\n</thead>\n  <tbody>\n    <tr>\n        <th>Start Date</th>\n        <th>End Date</th>\n        <th>From</th>\n        <th>To</th>\n        <th></th>\n        <th></th>\n    </tr>\n   <tr>\n          <td>@{variables('arr')[0]}</td>\n          <td>@{variables('arr')[1]}</td>\n          <td>@{if(equals(variables('arr')[2], 'Morning'), 'Morning', if(equals(variables('arr')[2], 'Noon'), 'Noon', if(equals(variables('arr')[2], 'full'), 'Full Day', variables('arr')[2])))\n}</td>\n          <td>@{if(equals(variables('arr')[3], 'half'), 'Half Day', if(equals(variables('arr')[3], 'full'), 'Full Day', variables('arr')[3]))\n}</td>\n          <td>@{variables('arr')[4]}</td>\n          <td>@{variables('arr')[5]}</td>\n      </tr>\n  </tbody>\n</table>"
+              },
+              "runAfter": {
+                "Update_file_properties": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6c424428-7168-4258-830d-c1b5ab851dc8"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Initialize_variable_3": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4217320e-2ebc-41fd-8aea-f115a346dc90"
+          }
+        },
+        "Condition_2": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Compose_1')",
+                  2
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Update_file_properties_2": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+                  "table": "65eb2800-399d-4cec-aabd-27bf5b5843a3",
+                  "id": "@outputs('Create_file')?['body/ItemId']",
+                  "item/EmployeeName": "@{outputs('Get_user_profile_(V2)')?['body/givenName']} @{outputs('Get_user_profile_(V2)')?['body/surname']}",
+                  "item/DateSubmitted": "@triggerBody()?['text_1']",
+                  "item/StartDate1": "@variables('arr')[0]",
+                  "item/EndDate1": "@variables('arr')[1]",
+                  "item/StartTime": "@if(equals(variables('arr')[2], 'Morning'), 'Morning', if(equals(variables('arr')[2], 'Noon'), 'Noon', if(equals(variables('arr')[2], 'full'), 'Full Day', variables('arr')[2])))\r\n",
+                  "item/EndTime": "@if(equals(variables('arr')[3], 'half'), 'Half Day', if(equals(variables('arr')[3], 'full'), 'Full Day', variables('arr')[3]))\r\n",
+                  "item/Hrs": "@variables('arr')[4]",
+                  "item/LTC/Value": "@variables('arr')[5]",
+                  "item/StartDate2": "@variables('arr')[6]",
+                  "item/EndDate2": "@variables('arr')[7]",
+                  "item/StartTime2": "@if(equals(variables('arr')[8], 'Morning'), 'Morning', if(equals(variables('arr')[8], 'Noon'), 'Noon', if(equals(variables('arr')[8], 'full'), 'Full Day', variables('arr')[8])))\r\n",
+                  "item/EndTime2": "@if(equals(variables('arr')[9], 'half'), 'Half Day', if(equals(variables('arr')[9], 'full'), 'Full Day', variables('arr')[9]))\r\n",
+                  "item/OData__x0048_rs2": "@variables('arr')[10]",
+                  "item/OData__x004c_TC2/Value": "@variables('arr')[11]",
+                  "item/StartDate3": " ",
+                  "item/EndDate3": " ",
+                  "item/StartTime3": " ",
+                  "item/EndTime3": " ",
+                  "item/OData__x0048_rs3": " ",
+                  "item/OData__x004c_TC3/Value": "PLEASE SELECT",
+                  "item/StartDate4": " ",
+                  "item/EndDate4": " ",
+                  "item/StartTime4": " ",
+                  "item/EndTime4": " ",
+                  "item/OData__x0048_rs4": " ",
+                  "item/OData__x004c_TC4/Value": "PLEASE SELECT",
+                  "item/StartDate5": " ",
+                  "item/EndDate5": " ",
+                  "item/StartTime5": " ",
+                  "item/EndTime5": " ",
+                  "item/OData__x0048_rs5": " ",
+                  "item/OData__x004c_TC5/Value": "PLEASE SELECT",
+                  "item/CommentsExplanation": "@triggerBody()?['text_3']",
+                  "item/CheckBox": "@if(equals(toLower(triggerBody()?['text_4']), 'yes'), '☑', '☐')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PatchFileItem",
+                  "connectionName": "shared_sharepointonline"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "3189c897-1d2e-4c70-a37b-80ce45cdbc5d"
+              }
+            },
+            "Append_to_string_variable_3": {
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "table",
+                "value": "<table border=\"1\" style=\"border-collapse: collapse; width: 100%; text-align: center;\"> \n <thead>\n        <tr style=\"background-color: lightgray;\">\n               <th colspan=\"2\">Dates Requested</th>\n               <th colspan=\"2\">Times Requested</th>\n               <th>Total Hours</th>\n               <th>Leave Type Code</th>\n        </tr>\n</thead>\n  <tbody>\n    <tr>\n        <th>Start Date</th>\n        <th>End Date</th>\n        <th>From</th>\n        <th>To</th>\n        <th></th>\n        <th></th>\n    </tr>\n      <tr>\n          <td>@{variables('arr')[0]}</td>\n          <td>@{variables('arr')[1]}</td>\n          <td>@{if(equals(variables('arr')[2], 'Morning'), 'Morning', if(equals(variables('arr')[2], 'Noon'), 'Noon', if(equals(variables('arr')[2], 'full'), 'Full Day', variables('arr')[2])))\n}</td>\n          <td>@{if(equals(variables('arr')[3], 'half'), 'Half Day', if(equals(variables('arr')[3], 'full'), 'Full Day', variables('arr')[3]))\n}</td>\n          <td>@{variables('arr')[4]}</td>\n          <td>@{variables('arr')[5]}</td>\n      </tr>\n      <tr>\n          <td>@{variables('arr')[6]}</td>\n          <td>@{variables('arr')[7]}</td>\n          <td>@{if(equals(variables('arr')[8], 'Morning'), 'Morning', if(equals(variables('arr')[8], 'Noon'), 'Noon', if(equals(variables('arr')[8], 'full'), 'Full Day', variables('arr')[8])))\n}</td>\n          <td>@{if(equals(variables('arr')[9], 'half'), 'Half Day', if(equals(variables('arr')[9], 'full'), 'Full Day', variables('arr')[9]))\n}</td>\n          <td>@{variables('arr')[10]}</td>\n          <td>@{variables('arr')[11]}</td>\n   </tbody>\n</table>"
+              },
+              "runAfter": {
+                "Update_file_properties_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5deee433-89ac-492e-8174-4e1a53e087f9"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_1": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5e17c98c-856f-4853-9069-419571831667"
+          }
+        },
+        "Condition_3": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Compose_1')",
+                  3
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Update_file_properties_3": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+                  "table": "65eb2800-399d-4cec-aabd-27bf5b5843a3",
+                  "id": "@outputs('Create_file')?['body/ItemId']",
+                  "item/EmployeeName": "@{outputs('Get_user_profile_(V2)')?['body/givenName']} @{outputs('Get_user_profile_(V2)')?['body/surname']}",
+                  "item/DateSubmitted": "@triggerBody()?['text_1']",
+                  "item/StartDate1": "@variables('arr')[0]",
+                  "item/EndDate1": "@variables('arr')[1]",
+                  "item/StartTime": "@if(equals(variables('arr')[2], 'Morning'), 'Morning', if(equals(variables('arr')[2], 'Noon'), 'Noon', if(equals(variables('arr')[2], 'full'), 'Full Day', variables('arr')[2])))\r\n",
+                  "item/EndTime": "@if(equals(variables('arr')[3], 'half'), 'Half Day', if(equals(variables('arr')[3], 'full'), 'Full Day', variables('arr')[3]))\r\n",
+                  "item/Hrs": "@variables('arr')[4]",
+                  "item/LTC/Value": "@variables('arr')[5]",
+                  "item/StartDate2": "@variables('arr')[6]",
+                  "item/EndDate2": "@variables('arr')[7]",
+                  "item/StartTime2": "@if(equals(variables('arr')[8], 'Morning'), 'Morning', if(equals(variables('arr')[8], 'Noon'), 'Noon', if(equals(variables('arr')[8], 'full'), 'Full Day', variables('arr')[8])))\r\n",
+                  "item/EndTime2": "@if(equals(variables('arr')[9], 'half'), 'Half Day', if(equals(variables('arr')[9], 'full'), 'Full Day', variables('arr')[9]))\r\n",
+                  "item/OData__x0048_rs2": "@variables('arr')[10]",
+                  "item/OData__x004c_TC2/Value": "@variables('arr')[11]",
+                  "item/StartDate3": "@variables('arr')[12]",
+                  "item/EndDate3": "@variables('arr')[13]",
+                  "item/StartTime3": "@if(equals(variables('arr')[14], 'Morning'), 'Morning', if(equals(variables('arr')[14], 'Noon'), 'Noon', if(equals(variables('arr')[14], 'full'), 'Full Day', variables('arr')[14])))\r\n",
+                  "item/EndTime3": "@if(equals(variables('arr')[15], 'half'), 'Half Day', if(equals(variables('arr')[15], 'full'), 'Full Day', variables('arr')[15]))\r\n",
+                  "item/OData__x0048_rs3": "@variables('arr')[16]",
+                  "item/OData__x004c_TC3/Value": "@variables('arr')[17]",
+                  "item/StartDate4": " ",
+                  "item/EndDate4": " ",
+                  "item/StartTime4": " ",
+                  "item/EndTime4": " ",
+                  "item/OData__x0048_rs4": " ",
+                  "item/OData__x004c_TC4/Value": "PLEASE SELECT",
+                  "item/StartDate5": " ",
+                  "item/EndDate5": " ",
+                  "item/StartTime5": " ",
+                  "item/EndTime5": " ",
+                  "item/OData__x0048_rs5": " ",
+                  "item/OData__x004c_TC5/Value": "PLEASE SELECT",
+                  "item/CommentsExplanation": "@triggerBody()?['text_3']",
+                  "item/CheckBox": "@if(equals(toLower(triggerBody()?['text_4']), 'yes'), '☑', '☐')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PatchFileItem",
+                  "connectionName": "shared_sharepointonline"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "899dd6bb-d762-406e-b070-c31406a5f383"
+              }
+            },
+            "Append_to_string_variable_4": {
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "table",
+                "value": "<table border=\"1\" style=\"border-collapse: collapse; width: 100%; text-align: center;\"> \n <thead>\n        <tr style=\"background-color: lightgray;\">\n               <th colspan=\"2\">Dates Requested</th>\n               <th colspan=\"2\">Times Requested</th>\n               <th>Total Hours</th>\n               <th>Leave Type Code</th>\n        </tr>\n</thead>\n  <tbody>\n    <tr>\n        <th>Start Date</th>\n        <th>End Date</th>\n        <th>From</th>\n        <th>To</th>\n        <th></th>\n        <th></th>\n    </tr>\n      <tr>\n          <td>@{variables('arr')[0]}</td>\n          <td>@{variables('arr')[1]}</td>\n          <td>@{if(equals(variables('arr')[2], 'Morning'), 'Morning', if(equals(variables('arr')[2], 'Noon'), 'Noon', if(equals(variables('arr')[2], 'full'), 'Full Day', variables('arr')[2])))\n}</td>\n          <td>@{if(equals(variables('arr')[3], 'half'), 'Half Day', if(equals(variables('arr')[3], 'full'), 'Full Day', variables('arr')[3]))\n}</td>\n          <td>@{variables('arr')[4]}</td>\n          <td>@{variables('arr')[5]}</td>\n      </tr>\n      <tr>\n          <td>@{variables('arr')[6]}</td>\n          <td>@{variables('arr')[7]}</td>\n          <td>@{if(equals(variables('arr')[8], 'Morning'), 'Morning', if(equals(variables('arr')[8], 'Noon'), 'Noon', if(equals(variables('arr')[8], 'full'), 'Full Day', variables('arr')[8])))\n}</td>\n          <td>@{if(equals(variables('arr')[9], 'half'), 'Half Day', if(equals(variables('arr')[9], 'full'), 'Full Day', variables('arr')[9]))\n}</td>\n          <td>@{variables('arr')[10]}</td>\n          <td>@{variables('arr')[11]}</td>\n      </tr>\n      <tr>\n          <td>@{variables('arr')[12]}</td>\n          <td>@{variables('arr')[13]}</td>\n          <td>@{if(equals(variables('arr')[14], 'Morning'), 'Morning', if(equals(variables('arr')[14], 'Noon'), 'Noon', if(equals(variables('arr')[14], 'full'), 'Full Day', variables('arr')[14])))\n}</td>\n          <td>@{if(equals(variables('arr')[15], 'half'), 'Half Day', if(equals(variables('arr')[15], 'full'), 'Full Day', variables('arr')[15]))\n}</td>\n          <td>@{variables('arr')[16]}</td>\n          <td>@{variables('arr')[17]}</td>\n      </tr>\n   </tbody>\n</table>"
+              },
+              "runAfter": {
+                "Update_file_properties_3": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "14d71993-98c2-4f27-8878-68ee0931d846"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b3df6e2b-e9c2-4763-b9ae-cf3d65c8428d"
+          }
+        },
+        "Condition_4": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Compose_1')",
+                  4
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Update_file_properties_4": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+                  "table": "65eb2800-399d-4cec-aabd-27bf5b5843a3",
+                  "id": "@outputs('Create_file')?['body/ItemId']",
+                  "item/EmployeeName": "@{outputs('Get_user_profile_(V2)')?['body/givenName']} @{outputs('Get_user_profile_(V2)')?['body/surname']}",
+                  "item/DateSubmitted": "@triggerBody()?['text_1']",
+                  "item/StartDate1": "@variables('arr')[0]",
+                  "item/EndDate1": "@variables('arr')[1]",
+                  "item/StartTime": "@if(equals(variables('arr')[2], 'Morning'), 'Morning', if(equals(variables('arr')[2], 'Noon'), 'Noon', if(equals(variables('arr')[2], 'full'), 'Full Day', variables('arr')[2])))\r\n",
+                  "item/EndTime": "@if(equals(variables('arr')[3], 'half'), 'Half Day', if(equals(variables('arr')[3], 'full'), 'Full Day', variables('arr')[3]))\r\n",
+                  "item/Hrs": "@variables('arr')[4]",
+                  "item/LTC/Value": "@variables('arr')[5]",
+                  "item/StartDate2": "@variables('arr')[6]",
+                  "item/EndDate2": "@variables('arr')[7]",
+                  "item/StartTime2": "@if(equals(variables('arr')[8], 'Morning'), 'Morning', if(equals(variables('arr')[8], 'Noon'), 'Noon', if(equals(variables('arr')[8], 'full'), 'Full Day', variables('arr')[8])))\r\n",
+                  "item/EndTime2": "@if(equals(variables('arr')[9], 'half'), 'Half Day', if(equals(variables('arr')[9], 'full'), 'Full Day', variables('arr')[9]))\r\n",
+                  "item/OData__x0048_rs2": "@variables('arr')[10]",
+                  "item/OData__x004c_TC2/Value": "@variables('arr')[11]",
+                  "item/StartDate3": "@variables('arr')[12]",
+                  "item/EndDate3": "@variables('arr')[13]",
+                  "item/StartTime3": "@if(equals(variables('arr')[14], 'Morning'), 'Morning', if(equals(variables('arr')[14], 'Noon'), 'Noon', if(equals(variables('arr')[14], 'full'), 'Full Day', variables('arr')[14])))\r\n",
+                  "item/EndTime3": "@if(equals(variables('arr')[15], 'half'), 'Half Day', if(equals(variables('arr')[15], 'full'), 'Full Day', variables('arr')[15]))\r\n",
+                  "item/OData__x0048_rs3": "@variables('arr')[16]",
+                  "item/OData__x004c_TC3/Value": "@variables('arr')[17]",
+                  "item/StartDate4": "@variables('arr')[18]",
+                  "item/EndDate4": "@variables('arr')[19]",
+                  "item/StartTime4": "@if(equals(variables('arr')[20], 'Morning'), 'Morning', if(equals(variables('arr')[20], 'Noon'), 'Noon', if(equals(variables('arr')[20], 'full'), 'Full Day', variables('arr')[20])))\r\n",
+                  "item/EndTime4": "@if(equals(variables('arr')[21], 'half'), 'Half Day', if(equals(variables('arr')[21], 'full'), 'Full Day', variables('arr')[21]))\r\n",
+                  "item/OData__x0048_rs4": "@variables('arr')[22]",
+                  "item/OData__x004c_TC4/Value": "@variables('arr')[23]",
+                  "item/StartDate5": " ",
+                  "item/EndDate5": " ",
+                  "item/StartTime5": " ",
+                  "item/EndTime5": " ",
+                  "item/OData__x0048_rs5": " ",
+                  "item/OData__x004c_TC5/Value": "PLEASE SELECT",
+                  "item/CommentsExplanation": "@triggerBody()?['text_3']",
+                  "item/CheckBox": "@if(equals(toLower(triggerBody()?['text_4']), 'yes'), '☑', '☐')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PatchFileItem",
+                  "connectionName": "shared_sharepointonline"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "8f12d99a-bde1-4ab1-86d4-d169a536cb21"
+              }
+            },
+            "Append_to_string_variable_5": {
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "table",
+                "value": "<table border=\"1\" style=\"border-collapse: collapse; width: 100%; text-align: center;\"> \n <thead>\n        <tr style=\"background-color: lightgray;\">\n               <th colspan=\"2\">Dates Requested</th>\n               <th colspan=\"2\">Times Requested</th>\n               <th>Total Hours</th>\n               <th>Leave Type Code</th>\n        </tr>\n</thead>\n  <tbody>\n    <tr>\n        <th>Start Date</th>\n        <th>End Date</th>\n        <th>From</th>\n        <th>To</th>\n        <th></th>\n        <th></th>\n    </tr>\n      <tr>\n          <td>@{variables('arr')[0]}</td>\n          <td>@{variables('arr')[1]}</td>\n          <td>@{if(equals(variables('arr')[2], 'Morning'), 'Morning', if(equals(variables('arr')[2], 'Noon'), 'Noon', if(equals(variables('arr')[2], 'full'), 'Full Day', variables('arr')[2])))\n}</td>\n          <td>@{if(equals(variables('arr')[3], 'half'), 'Half Day', if(equals(variables('arr')[3], 'full'), 'Full Day', variables('arr')[3]))\n}</td>\n          <td>@{variables('arr')[4]}</td>\n          <td>@{variables('arr')[5]}</td>\n      </tr>\n      <tr>\n          <td>@{variables('arr')[6]}</td>\n          <td>@{variables('arr')[7]}</td>\n          <td>@{if(equals(variables('arr')[8], 'Morning'), 'Morning', if(equals(variables('arr')[8], 'Noon'), 'Noon', if(equals(variables('arr')[8], 'full'), 'Full Day', variables('arr')[8])))\n}</td>\n          <td>@{if(equals(variables('arr')[9], 'half'), 'Half Day', if(equals(variables('arr')[9], 'full'), 'Full Day', variables('arr')[9]))\n}</td>\n          <td>@{variables('arr')[10]}</td>\n          <td>@{variables('arr')[11]}</td>\n      </tr>\n      <tr>\n          <td>@{variables('arr')[12]}</td>\n          <td>@{variables('arr')[13]}</td>\n          <td>@{if(equals(variables('arr')[14], 'Morning'), 'Morning', if(equals(variables('arr')[14], 'Noon'), 'Noon', if(equals(variables('arr')[14], 'full'), 'Full Day', variables('arr')[14])))\n}</td>\n          <td>@{if(equals(variables('arr')[15], 'half'), 'Half Day', if(equals(variables('arr')[15], 'full'), 'Full Day', variables('arr')[15]))\n}</td>\n          <td>@{variables('arr')[16]}</td>\n          <td>@{variables('arr')[17]}</td>\n      </tr>\n      <tr>\n          <td>@{variables('arr')[18]}</td>\n          <td>@{variables('arr')[19]}</td>\n          <td>@{if(equals(variables('arr')[20], 'Morning'), 'Morning', if(equals(variables('arr')[20], 'Noon'), 'Noon', if(equals(variables('arr')[20], 'full'), 'Full Day', variables('arr')[20])))\n}</td>\n          <td>@{if(equals(variables('arr')[21], 'half'), 'Half Day', if(equals(variables('arr')[21], 'full'), 'Full Day', variables('arr')[21]))\n}</td>\n          <td>@{variables('arr')[22]}</td>\n          <td>@{variables('arr')[23]}</td>\n      </tr>\n  </tbody>\n</table>"
+              },
+              "runAfter": {
+                "Update_file_properties_4": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "59c96a61-d203-41f7-bc29-32718fb50805"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_3": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "318d874f-6629-474a-a80b-6df8d6e36bea"
+          }
+        },
+        "Condition_5": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Compose_1')",
+                  5
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Update_file_properties_5": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+                  "table": "65eb2800-399d-4cec-aabd-27bf5b5843a3",
+                  "id": "@outputs('Create_file')?['body/ItemId']",
+                  "item/EmployeeName": "@{outputs('Get_user_profile_(V2)')?['body/givenName']} @{outputs('Get_user_profile_(V2)')?['body/surname']}",
+                  "item/DateSubmitted": "@triggerBody()?['text_1']",
+                  "item/StartDate1": "@variables('arr')[0]",
+                  "item/EndDate1": "@variables('arr')[1]",
+                  "item/StartTime": "@if(equals(variables('arr')[2], 'Morning'), 'Morning', if(equals(variables('arr')[2], 'Noon'), 'Noon', if(equals(variables('arr')[2], 'full'), 'Full Day', variables('arr')[2])))\r\n",
+                  "item/EndTime": "@if(equals(variables('arr')[3], 'half'), 'Half Day', if(equals(variables('arr')[3], 'full'), 'Full Day', variables('arr')[3]))\r\n",
+                  "item/Hrs": "@variables('arr')[4]",
+                  "item/LTC/Value": "@variables('arr')[5]",
+                  "item/StartDate2": "@variables('arr')[6]",
+                  "item/EndDate2": "@variables('arr')[7]",
+                  "item/StartTime2": "@if(equals(variables('arr')[8], 'Morning'), 'Morning', if(equals(variables('arr')[8], 'Noon'), 'Noon', if(equals(variables('arr')[8], 'full'), 'Full Day', variables('arr')[8])))\r\n",
+                  "item/EndTime2": "@if(equals(variables('arr')[9], 'half'), 'Half Day', if(equals(variables('arr')[9], 'full'), 'Full Day', variables('arr')[9]))\r\n",
+                  "item/OData__x0048_rs2": "@variables('arr')[10]",
+                  "item/OData__x004c_TC2/Value": "@variables('arr')[11]",
+                  "item/StartDate3": "@variables('arr')[12]",
+                  "item/EndDate3": "@variables('arr')[13]",
+                  "item/StartTime3": "@if(equals(variables('arr')[14], 'Morning'), 'Morning', if(equals(variables('arr')[14], 'Noon'), 'Noon', if(equals(variables('arr')[14], 'full'), 'Full Day', variables('arr')[14])))\r\n",
+                  "item/EndTime3": "@if(equals(variables('arr')[15], 'half'), 'Half Day', if(equals(variables('arr')[15], 'full'), 'Full Day', variables('arr')[15]))\r\n",
+                  "item/OData__x0048_rs3": "@variables('arr')[16]",
+                  "item/OData__x004c_TC3/Value": "@variables('arr')[17]",
+                  "item/StartDate4": "@variables('arr')[18]",
+                  "item/EndDate4": "@variables('arr')[19]",
+                  "item/StartTime4": "@if(equals(variables('arr')[20], 'Morning'), 'Morning', if(equals(variables('arr')[20], 'Noon'), 'Noon', if(equals(variables('arr')[20], 'full'), 'Full Day', variables('arr')[20])))\r\n",
+                  "item/EndTime4": "@if(equals(variables('arr')[21], 'half'), 'Half Day', if(equals(variables('arr')[21], 'full'), 'Full Day', variables('arr')[21]))\r\n",
+                  "item/OData__x0048_rs4": "@variables('arr')[22]",
+                  "item/OData__x004c_TC4/Value": "@variables('arr')[23]",
+                  "item/StartDate5": "@variables('arr')[24]",
+                  "item/EndDate5": "@variables('arr')[25]",
+                  "item/StartTime5": "@if(equals(variables('arr')[26], 'Morning'), 'Morning', if(equals(variables('arr')[26], 'Noon'), 'Noon', if(equals(variables('arr')[26], 'full'), 'Full Day', variables('arr')[26])))\r\n",
+                  "item/EndTime5": "@if(equals(variables('arr')[27], 'half'), 'Half Day', if(equals(variables('arr')[27], 'full'), 'Full Day', variables('arr')[27]))\r\n",
+                  "item/OData__x0048_rs5": "@variables('arr')[28]",
+                  "item/OData__x004c_TC5/Value": "@variables('arr')[29]",
+                  "item/CommentsExplanation": "@triggerBody()?['text_3']",
+                  "item/CheckBox": "@if(equals(toLower(triggerBody()?['text_4']), 'yes'), '☑', '☐')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PatchFileItem",
+                  "connectionName": "shared_sharepointonline"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "07dc996c-7061-45b4-8179-755c4e357c68"
+              }
+            },
+            "Append_to_string_variable_6": {
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "table",
+                "value": "<table border=\"1\" style=\"border-collapse: collapse; width: 100%; text-align: center;\"> \n <thead>\n        <tr style=\"background-color: lightgray;\">\n               <th colspan=\"2\">Dates Requested</th>\n               <th colspan=\"2\">Times Requested</th>\n               <th>Total Hours</th>\n               <th>Leave Type Code</th>\n        </tr>\n</thead>\n  <tbody>\n    <tr>\n        <th>Start Date</th>\n        <th>End Date</th>\n        <th>From</th>\n        <th>To</th>\n        <th></th>\n        <th></th>\n    </tr>\n      <tr>\n          <td>@{variables('arr')[0]}</td>\n          <td>@{variables('arr')[1]}</td>\n          <td>@{if(equals(variables('arr')[2], 'Morning'), 'Morning', if(equals(variables('arr')[2], 'Noon'), 'Noon', if(equals(variables('arr')[2], 'full'), 'Full Day', variables('arr')[2])))\n}</td>\n          <td>@{if(equals(variables('arr')[3], 'half'), 'Half Day', if(equals(variables('arr')[3], 'full'), 'Full Day', variables('arr')[3]))\n}</td>\n          <td>@{variables('arr')[4]}</td>\n          <td>@{variables('arr')[5]}</td>\n      </tr>\n      <tr>\n          <td>@{variables('arr')[6]}</td>\n          <td>@{variables('arr')[7]}</td>\n          <td>@{if(equals(variables('arr')[8], 'Morning'), 'Morning', if(equals(variables('arr')[8], 'Noon'), 'Noon', if(equals(variables('arr')[8], 'full'), 'Full Day', variables('arr')[8])))\n}</td>\n          <td>@{if(equals(variables('arr')[9], 'half'), 'Half Day', if(equals(variables('arr')[9], 'full'), 'Full Day', variables('arr')[9]))\n}</td>\n          <td>@{variables('arr')[10]}</td>\n          <td>@{variables('arr')[11]}</td>\n      </tr>\n      <tr>\n          <td>@{variables('arr')[12]}</td>\n          <td>@{variables('arr')[13]}</td>\n          <td>@{if(equals(variables('arr')[14], 'Morning'), 'Morning', if(equals(variables('arr')[14], 'Noon'), 'Noon', if(equals(variables('arr')[14], 'full'), 'Full Day', variables('arr')[14])))\n}</td>\n          <td>@{if(equals(variables('arr')[15], 'half'), 'Half Day', if(equals(variables('arr')[15], 'full'), 'Full Day', variables('arr')[15]))\n}</td>\n          <td>@{variables('arr')[16]}</td>\n          <td>@{variables('arr')[17]}</td>\n      </tr>\n      <tr>\n          <td>@{variables('arr')[18]}</td>\n          <td>@{variables('arr')[19]}</td>\n          <td>@{if(equals(variables('arr')[20], 'Morning'), 'Morning', if(equals(variables('arr')[20], 'Noon'), 'Noon', if(equals(variables('arr')[20], 'full'), 'Full Day', variables('arr')[20])))\n}</td>\n          <td>@{if(equals(variables('arr')[21], 'half'), 'Half Day', if(equals(variables('arr')[21], 'full'), 'Full Day', variables('arr')[21]))\n}</td>\n          <td>@{variables('arr')[22]}</td>\n          <td>@{variables('arr')[23]}</td>\n      </tr>\n      <tr>\n          <td>@{variables('arr')[24]}</td>\n          <td>@{variables('arr')[25]}</td>\n          <td>@{if(equals(variables('arr')[26], 'Morning'), 'Morning', if(equals(variables('arr')[26], 'Noon'), 'Noon', if(equals(variables('arr')[26], 'full'), 'Full Day', variables('arr')[26])))\n}</td>\n          <td>@{if(equals(variables('arr')[27], 'half'), 'Half Day', if(equals(variables('arr')[27], 'full'), 'Full Day', variables('arr')[27]))\n}</td>\n          <td>@{variables('arr')[28]}</td>\n          <td>@{variables('arr')[29]}</td>\n      </tr>\n  </tbody>\n</table>"
+              },
+              "runAfter": {
+                "Update_file_properties_5": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6a832e4d-4735-4c3c-bfc0-3db4af1ec68e"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Condition_4": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cca3aae2-2f69-4f0f-bd37-adc3734259c7"
+          }
+        },
+        "Get_files_(properties_only)_1": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+              "table": "65eb2800-399d-4cec-aabd-27bf5b5843a3",
+              "$filter": "substringof('@{outputs('Create_file')?['body/Name']}', FileLeafRef)"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetFileItems",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Condition_5": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d3311351-fa18-4fd7-b9b3-adbe3218d88f"
+          }
+        },
+        "Get_file_content": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/sbpd-hd-staging",
+              "id": "@outputs('Create_file')?['body/Id']",
+              "inferContentType": true
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetFileContent",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Get_files_(properties_only)_1": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "58a5eb7b-cade-4356-9dda-716c8dd0e8d1"
+          }
+        },
+        "Get_user_profile_(V2)": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "id": "@triggerBody()?['text']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+              "operationId": "UserProfile_V2",
+              "connectionName": "shared_office365users"
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_1": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3f0ee340-cf0c-4329-85f7-a0a0e108f055"
+          }
+        },
+        "Initialize_variable_3": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "table",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2c211a6a-17ce-4519-bf51-e4acfb9718a0"
+          }
+        },
+        "Send_an_email_(V2)_1": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "emailMessage/To": "@triggerBody()?['text_5']",
+              "emailMessage/Subject": "Time Off Request",
+              "emailMessage/Body": "<p class=\"editor-paragraph\">Hello there!<br>This is an automated email for the time off request of @{outputs('Get_user_profile_(V2)')?['body/displayName']}.</p><p class=\"editor-paragraph\">Here are the days they are requesting off:<br>@{variables('table')}</p>",
+              "emailMessage/Attachments": [
+                {
+                  "Name": "@variables('fileName')",
+                  "ContentBytes": "@body('Get_file_content')"
+                }
+              ],
+              "emailMessage/Importance": "Normal"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+              "operationId": "SendEmailV2",
+              "connectionName": "shared_office365"
+            }
+          },
+          "runAfter": {
+            "Get_file_content": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

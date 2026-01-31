@@ -1,0 +1,8 @@
+<botcomponent_connectionreferenceset>
+  <botcomponent_connectionreference botcomponentid.schemaname="cr689_sbpdAssistant.topic.CreateSimpleTicket" connectionreferenceid.connectionreferencelogicalname="cr689_sbpdAssistant.shared_sharepointonline.78666f8440f7430cb5add85210c61a56">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_connectionreference>
+  <botcomponent_connectionreference botcomponentid.schemaname="cr689_sbpdAssistant.topic.Untitled_Dot" connectionreferenceid.connectionreferencelogicalname="cr689_sbpdAssistant.shared_sharepointonline.78666f8440f7430cb5add85210c61a56">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_connectionreference>
+</botcomponent_connectionreferenceset>

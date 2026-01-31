@@ -1,0 +1,27 @@
+{
+  "$kind": "BotConfiguration",
+  "settings": {
+    "default-2.1.0": {
+      "content": {
+        "conversationStarters": [],
+        "description": "The Santa Barbara Public Defender\u0027s office Assistant will help employees retrieve files, fill out forms, and navigate the SharePoint.",
+        "displayName": "SBPD Assistant",
+        "instructions": "Fill out forms through power automate flows, retrieve files from the sharepoint, and communicate basic information about the Santa Barbara Public Defender\u0027s office."
+      },
+      "spec": {
+        "connectors": [],
+        "knowledgeSources": {
+          "publicSites": [],
+          "sharepointSites": []
+        }
+      }
+    },
+    "GenerativeActionsEnabled": false
+  },
+  "aISettings": {
+    "$kind": "AISettings",
+    "useModelKnowledge": false,
+    "isFileAnalysisEnabled": false,
+    "isSemanticSearchEnabled": false
+  }
+}

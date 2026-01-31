@@ -1,0 +1,253 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - Copy Request
+      - Fill out copy request
+      - Copy request form
+      - fill copy request
+      - Copy request forms
+
+  actions:
+    - kind: SendActivity
+      id: s6nC3Q
+      activity: Let's fill out a Copy Request form. Please answers these questions.
+
+    - kind: SetVariable
+      id: B1a3fZ
+      variable: Topic.PhoneNumber
+      value: 111-111-1111
+
+    - kind: Question
+      id: 888zj1
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.PaymentChoice
+      prompt: Payment Information
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: Check
+              displayName: Check
+
+            - id: Credit Card - In Person
+              displayName: Credit Card - In Person
+
+            - id: Credit Card - Online
+              displayName: Credit Card - Online
+
+    - kind: SetVariable
+      id: tWMZi9
+      variable: Topic.Check
+      value: No
+
+    - kind: SetVariable
+      id: Vn9mF9
+      variable: Topic.InPersonCreditCard
+      value: No
+
+    - kind: SetVariable
+      id: lKFHkB
+      variable: Topic.OnlineCreditCard
+      value: No
+
+    - kind: ConditionGroup
+      id: kG0oj1
+      conditions:
+        - id: G6CjpF
+          condition: =Topic.PaymentChoice = 'cr689_sbpdAssistant.topic.CopyRequest.main.888zj1'.Check
+          actions:
+            - kind: SetVariable
+              id: Q80zdk
+              variable: Topic.Check
+              value: Yes
+
+            - kind: Question
+              id: AvXnz6
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.CheckNum
+              prompt: |-
+                Please input **Check #**
+                (Make check payable to: Clerk of the Court)
+              entity: StringPrebuiltEntity
+
+        - id: TAGxNS
+          condition: =Topic.PaymentChoice = 'cr689_sbpdAssistant.topic.CopyRequest.main.888zj1'.'Credit Card - In Person'
+          actions:
+            - kind: SetVariable
+              id: YmpSrZ
+              variable: Topic.InPersonCreditCard
+              value: Yes
+
+        - id: huSSJq
+          condition: =Topic.PaymentChoice = 'cr689_sbpdAssistant.topic.CopyRequest.main.888zj1'.'Credit Card - Online'
+          actions:
+            - kind: SetVariable
+              id: zaGXoI
+              variable: Topic.OnlineCreditCard
+              value: Yes
+
+    - kind: ConditionGroup
+      id: QWOS7M
+      conditions:
+        - id: 2eeSZM
+          condition: =Topic.PaymentChoice <> 'cr689_sbpdAssistant.topic.CopyRequest.main.888zj1'.Check
+          displayName: Condition
+          actions:
+            - kind: SetVariable
+              id: KVDhMd
+              variable: Topic.CheckNum
+              value: Empty
+
+    - kind: Question
+      id: U7l81t
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.DeliveryChoice
+      prompt: Document Delivery
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: In Person
+              displayName: In Person
+
+            - id: Email
+              displayName: Email
+
+            - id: Mail
+              displayName: Mail
+
+    - kind: SetVariable
+      id: pCR7Ri
+      variable: Topic.InPerson
+      value: No
+
+    - kind: SetVariable
+      id: 1B6X9t
+      variable: Topic.Email
+      value: No
+
+    - kind: SetVariable
+      id: 3jphlP
+      variable: Topic.Mail
+      value: No
+
+    - kind: ConditionGroup
+      id: vXVCNq
+      conditions:
+        - id: eGqonH
+          condition: =Topic.DeliveryChoice = 'cr689_sbpdAssistant.topic.CopyRequest.main.U7l81t'.'In Person'
+          actions:
+            - kind: SetVariable
+              id: AZweQ5
+              variable: Topic.InPerson
+              value: Yes
+
+        - id: 2FTDZQ
+          condition: =Topic.DeliveryChoice = 'cr689_sbpdAssistant.topic.CopyRequest.main.U7l81t'.Email
+          actions:
+            - kind: SetVariable
+              id: qHZWKv
+              variable: Topic.Email
+              value: Yes
+
+            - kind: Question
+              id: 681ZQ9
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.eAddress
+              prompt: Please input **Email Address**
+              entity: EmailPrebuiltEntity
+
+        - id: CRVDRO
+          condition: =Topic.DeliveryChoice = 'cr689_sbpdAssistant.topic.CopyRequest.main.U7l81t'.Mail
+          actions:
+            - kind: SetVariable
+              id: uVubwC
+              variable: Topic.Mail
+              value: Yes
+
+            - kind: Question
+              id: m7enxH
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.mAddress
+              prompt: Please input **Mailing Address**
+              entity: StreetAddressPrebuiltEntity
+
+    - kind: ConditionGroup
+      id: j89uY1
+      conditions:
+        - id: YlZU91
+          condition: =Topic.DeliveryChoice = 'cr689_sbpdAssistant.topic.CopyRequest.main.U7l81t'.'In Person'
+          actions:
+            - kind: SetVariable
+              id: a0yqHD
+              variable: Topic.eAddress
+              value: Empty
+
+            - kind: SetVariable
+              id: X2kiny
+              variable: Topic.mAddress
+              value: Empty
+
+        - id: BopNSN
+          condition: =Topic.DeliveryChoice = 'cr689_sbpdAssistant.topic.CopyRequest.main.U7l81t'.Email
+          actions:
+            - kind: SetVariable
+              id: 895MWn
+              variable: Topic.mAddress
+              value: Empty
+
+        - id: 9Nkza8
+          condition: =Topic.DeliveryChoice = 'cr689_sbpdAssistant.topic.CopyRequest.main.U7l81t'.Mail
+          actions:
+            - kind: SetVariable
+              id: gvE4w6
+              variable: Topic.eAddress
+              value: Empty
+
+    - kind: InvokeFlowAction
+      id: MHUrSG
+      input:
+        binding:
+          text: =System.User.PrincipalName
+          text_1: =Topic.Check
+          text_10: =Topic.PhoneNumber
+          text_2: =Topic.InPersonCreditCard
+          text_3: =Topic.OnlineCreditCard
+          text_4: =Topic.CheckNum
+          text_5: =Topic.InPerson
+          text_6: =Topic.Email
+          text_7: =Topic.Mail
+          text_8: =Topic.eAddress
+          text_9: =Topic.mAddress
+
+      output:
+        binding:
+          file: Topic.File
+
+      flowId: 75e5cca1-a0fb-ef11-bae2-7c1e520c2c51
+
+    - kind: SendActivity
+      id: D64Ztb
+      activity: A copy of your form has also been emailed to you! Thank you!
+
+    - kind: BeginDialog
+      id: 6P1CHj
+      dialog: cr689_sbpdAssistant.topic.ConversationStart
+
+inputType: {}
+outputType: {}

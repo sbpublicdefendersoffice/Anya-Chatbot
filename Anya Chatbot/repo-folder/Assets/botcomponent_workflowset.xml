@@ -1,0 +1,23 @@
+<botcomponent_workflowset>
+  <botcomponent_workflow botcomponentid.schemaname="cr689_sbpdAssistant.topic.ContactRetrievalV4" workflowid.workflowid="fc31a118-75f0-ef11-9341-0022482ee71a">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+  <botcomponent_workflow botcomponentid.schemaname="cr689_sbpdAssistant.topic.CopyRequest" workflowid.workflowid="75e5cca1-a0fb-ef11-bae2-7c1e520c2c51">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+  <botcomponent_workflow botcomponentid.schemaname="cr689_sbpdAssistant.topic.PDFFill" workflowid.workflowid="75e5cca1-a0fb-ef11-bae2-7c1e520c2c51">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+  <botcomponent_workflow botcomponentid.schemaname="cr689_sbpdAssistant.topic.TimeOffRequestV2" workflowid.workflowid="2ca8b85b-d3fe-ef11-bae2-7c1e520c2c51">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+  <botcomponent_workflow botcomponentid.schemaname="cr689_sbpdAssistant.topic.Translate" workflowid.workflowid="68e0e17c-43a8-ef11-b8e8-6045bda7dacc">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+  <botcomponent_workflow botcomponentid.schemaname="cr689_sbpdAssistant.topic.TransportReferral" workflowid.workflowid="61f41291-0460-1eed-d55e-4575bcc3aa47">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+  <botcomponent_workflow botcomponentid.schemaname="cr689_sbpdAssistant.topic.Untitled_vCX" workflowid.workflowid="f45df866-8f9d-ef11-8a69-6045bda7dacc">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+</botcomponent_workflowset>

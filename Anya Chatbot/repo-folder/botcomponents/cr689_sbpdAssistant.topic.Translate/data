@@ -1,0 +1,56 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - I'd like to translate
+      - Translate
+      - Translate text
+      - Can you covert this text language
+      - can you translate
+
+  actions:
+    - kind: Question
+      id: question_7oykdu
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.Var1
+      prompt: What text would you like to translate?
+      entity: StringPrebuiltEntity
+
+    - kind: Question
+      id: question_N0yqG5
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.Var2
+      prompt: And what language would you like to translate to?
+      entity: StringPrebuiltEntity
+
+    - kind: SetVariable
+      id: setVariable_Olv4cq
+      variable: Topic.Var2
+      value: =Lower(Trim(Topic.Var2))
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_vWAfOo
+      input:
+        binding:
+          text: =Topic.Var1
+          text_1: =Topic.Var2
+
+      output:
+        binding:
+          translated: Topic.Translated
+
+      flowId: 68e0e17c-43a8-ef11-b8e8-6045bda7dacc
+
+    - kind: SendActivity
+      id: sendActivity_6YBlbe
+      activity: "{Topic.Translated}"
+
+    - kind: BeginDialog
+      id: jh7BsF
+      dialog: cr689_sbpdAssistant.topic.ConversationStart

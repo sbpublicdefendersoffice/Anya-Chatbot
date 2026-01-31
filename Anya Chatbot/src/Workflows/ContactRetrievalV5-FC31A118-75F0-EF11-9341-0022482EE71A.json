@@ -1,0 +1,192 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_office365users": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365users_b0320"
+        },
+        "api": {
+          "name": "shared_office365users"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "b8f61c18-7224-4f8a-9c5f-72fbce5df764"
+          },
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "description": "Please enter your input",
+                  "title": "Name",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_Copilot": {
+          "runAfter": {
+            "Append_to_string_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "81c94f73-dd52-465c-ad3b-a4686da63cc3"
+          },
+          "type": "Response",
+          "kind": "Skills",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "output": "@{variables('Format')}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "output": {
+                  "title": "output",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Search_for_users_(V2)": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "c0d0e985-4d92-4e7e-b444-c68a270573cc"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365users",
+              "operationId": "SearchUserV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365users"
+            },
+            "parameters": {
+              "searchTerm": "@triggerBody()?['text']",
+              "isSearchTermRequired": true
+            },
+            "authentication": "@parameters('$authentication')"
+          },
+          "runtimeConfiguration": {
+            "paginationPolicy": {
+              "minimumItemCount": 10
+            }
+          }
+        },
+        "Filter_array": {
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "43c9725e-d042-48a1-80df-7f8e7b5d072c"
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@outputs('Search_for_users_(V2)')?['body/value']",
+            "where": "@or(equals(item()?['GivenName'], triggerBody()?['text']), equals(item()?['Surname'], triggerBody()?['text']), contains(item()?['DisplayName'], triggerBody()?['text']))"
+          }
+        },
+        "Select": {
+          "runAfter": {
+            "Filter_array": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "95031b08-da92-4b1f-8c3f-2607235fe219"
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@body('Filter_array')",
+            "select": "@concat(\r\n    '<b>Name: </b><a href=\"https://teams.microsoft.com/l/chat/0/0?users=', item()?['UserPrincipalName'], '\" target=\"_blank\">', item()?['DisplayName'], '</a><br>',\r\n    '<b>Department: </b>', if(empty(item()?['Department']), 'N/A', item()?['Department']), '<br>',\r\n    '<b>Email: </b>', item()?['UserPrincipalName'], '<br>',\r\n    '<b>Phone: </b>', if(empty(item()?['BusinessPhones']), 'No phone available', join(item()?['BusinessPhones'], ', ')), '<br>',\r\n    '----------------------------------------<br>'\r\n)\r\n"
+          }
+        },
+        "Append_to_string_variable": {
+          "runAfter": {
+            "Join": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "abe47445-acf7-48d7-82e2-342695702fa8"
+          },
+          "type": "AppendToStringVariable",
+          "inputs": {
+            "name": "Format",
+            "value": "@body('Join')"
+          }
+        },
+        "Initialize_variable": {
+          "runAfter": {
+            "Search_for_users_(V2)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "186deaf6-7826-40bb-9c40-bdf016be0a56"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Format",
+                "type": "string",
+                "value": "<br>----------------------------------------<br>"
+              }
+            ]
+          }
+        },
+        "Join": {
+          "runAfter": {
+            "Select": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "97c02c70-c0d0-4963-ac5a-5c62f3fd6b11"
+          },
+          "type": "Join",
+          "inputs": {
+            "from": "@body('Select')",
+            "joinWith": " "
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

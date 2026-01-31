@@ -1,0 +1,114 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - supervisor
+      - who is my supervsior
+      - Supervisor contact
+      - Can I get my supervisors contact
+
+  actions:
+    - kind: Question
+      id: question_EB1t2I
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.email
+      prompt: What is your email?
+      entity: StringPrebuiltEntity
+
+    - kind: HttpRequestAction
+      id: zuWdac
+      url: =Concatenate("http://64.23.139.78:8000/search?q=", Topic.email)
+      body: {}
+      response: Topic.ldapContact
+      responseSchema:
+        kind: Table
+        properties:
+          Department: String
+          Email: String
+          FirstName: String
+          FullName: String
+          JobTitle: String
+          LastName: String
+          Manager: String
+          ManagerDepartment: String
+          ManagerEmail: String
+          ManagerOffice: String
+          ManagerPhone: String
+          ManagerTitle: String
+          Office: String
+          Phone: String
+          Username: String
+
+    - kind: ConditionGroup
+      id: conditionGroup_W1FdPn
+      conditions:
+        - id: conditionItem_Hdib8b
+          condition: =IsEmpty(Topic.ldapContact)
+          actions:
+            - kind: SendActivity
+              id: sendActivity_JwaR5n
+              activity: I could not find {Topic.email}
+
+            - kind: Question
+              id: question_WxaaLl
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: init:Topic.Var1
+              prompt: Would you like to try again?
+              entity:
+                kind: EmbeddedEntity
+                definition:
+                  kind: ClosedListEntity
+                  items:
+                    - id: Yes
+                      displayName: Yes
+
+                    - id: No
+                      displayName: No
+
+            - kind: ConditionGroup
+              id: conditionGroup_gfj0tL
+              conditions:
+                - id: conditionItem_Iibbri
+                  condition: =Topic.Var1 = 'cr689_sbpdAssistant.topic.LDAP.main.question_WxaaLl'.Yes
+                  actions:
+                    - kind: GotoAction
+                      id: c3Xgff
+                      actionId: question_EB1t2I
+
+                - id: conditionItem_y0DOzp
+                  condition: =Topic.Var1 = 'cr689_sbpdAssistant.topic.LDAP.main.question_WxaaLl'.No
+
+      elseActions:
+        - kind: SendActivity
+          id: 5zjkXy
+          activity: |-
+            Name: {Concat(Topic.ldapContact, FullName)}
+            
+            Email: {Concat(Topic.ldapContact, Email)}
+            
+            
+            
+            _Here is your supervisor's contact information:_
+            
+            **Supervisor's Name:** {Concat(Topic.ldapContact, Manager)}
+            
+            **Department:** {Concat(Topic.ldapContact, ManagerDepartment)}
+            
+            **Office:** {Concat(Topic.ldapContact, ManagerOffice)}
+            
+            **Phone:** {Concat(Topic.ldapContact, ManagerPhone)}
+            
+            **Supervisor's Email:** {Concat(Topic.ldapContact, ManagerEmail)}
+
+    - kind: BeginDialog
+      id: rNxFbH
+      dialog: cr689_sbpdAssistant.topic.ConversationStart
+
+inputType: {}
+outputType: {}

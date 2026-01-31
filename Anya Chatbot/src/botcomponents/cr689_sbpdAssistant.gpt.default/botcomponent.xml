@@ -1,0 +1,11 @@
+<botcomponent schemaname="cr689_sbpdAssistant.gpt.default">
+  <componenttype>15</componenttype>
+  <description>The Santa Barbara Public Defender's office Assistant will help employees retrieve files, fill out forms, and navigate the SharePoint.</description>
+  <iscustomizable>0</iscustomizable>
+  <name>Anya</name>
+  <parentbotid>
+    <schemaname>cr689_sbpdAssistant</schemaname>
+  </parentbotid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</botcomponent>

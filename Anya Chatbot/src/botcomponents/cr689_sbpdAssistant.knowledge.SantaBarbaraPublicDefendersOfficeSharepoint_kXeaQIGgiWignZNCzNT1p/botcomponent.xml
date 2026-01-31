@@ -1,0 +1,11 @@
+<botcomponent schemaname="cr689_sbpdAssistant.knowledge.SantaBarbaraPublicDefendersOfficeSharepoint_kXeaQIGgiWignZNCzNT1p">
+  <componenttype>16</componenttype>
+  <description>This is the sharepoint that holds the power apps and all the necessary files for the public defender's office.</description>
+  <iscustomizable>0</iscustomizable>
+  <name>Santa Barbara Public Defender's Office Sharepoint</name>
+  <parentbotid>
+    <schemaname>cr689_sbpdAssistant</schemaname>
+  </parentbotid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</botcomponent>

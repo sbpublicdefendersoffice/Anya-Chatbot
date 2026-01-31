@@ -1,0 +1,4 @@
+<connectionreference logicalname="cr689_sharedsharepointonline_dd1ff">
+  <connectionreferencedisplayname>Office 365 Users</connectionreferencedisplayname>
+  <connectorid>/providers/Microsoft.PowerApps/apis/shared_sharepointonline</connectorid>
+</connectionreference>

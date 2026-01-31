@@ -1,0 +1,1023 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "api": {
+          "name": "shared_sharepointonline"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_4776c"
+        },
+        "runtimeSource": "invoker"
+      },
+      "shared_office365": {
+        "api": {
+          "name": "shared_office365"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_369b1"
+        },
+        "runtimeSource": "invoker"
+      },
+      "shared_office365users": {
+        "api": {
+          "name": "shared_office365users"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365users_8462f"
+        },
+        "runtimeSource": "invoker"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text_1": {
+                  "description": "Please enter your input",
+                  "title": "NameC",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text": {
+                  "description": "Please enter your input",
+                  "title": "Release Date",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_2": {
+                  "description": "Please enter your input",
+                  "title": "Bed Availability",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_3": {
+                  "description": "Please enter your input",
+                  "title": "Case Num",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_4": {
+                  "description": "Please enter your input",
+                  "title": "DOB",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_5": {
+                  "description": "Please enter your input",
+                  "title": "Language",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_6": {
+                  "description": "Please enter your input",
+                  "title": "Custody Status",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_7": {
+                  "description": "Please enter your input",
+                  "title": "Sentence Status",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_8": {
+                  "description": "Please enter your input",
+                  "title": "Level of Charge",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_9": {
+                  "description": "Please enter your input",
+                  "title": "Case Location",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_10": {
+                  "description": "Please enter your input",
+                  "title": "Conditions of Release",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_11": {
+                  "description": "Please enter your input",
+                  "title": "Client Phone",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_12": {
+                  "description": "Please enter your input",
+                  "title": "Attorney",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_13": {
+                  "description": "Please enter your input",
+                  "title": "SSN",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_14": {
+                  "description": "Please enter your input",
+                  "title": "Program",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_15": {
+                  "description": "Please enter your input",
+                  "title": "Location",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_16": {
+                  "description": "Please enter your input",
+                  "title": "Date of Arrival",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_17": {
+                  "description": "Please enter your input",
+                  "title": "Contact Person",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_18": {
+                  "description": "Please enter your input",
+                  "title": "Flexibility",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_19": {
+                  "description": "Please enter your input",
+                  "title": "Contact Number",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_20": {
+                  "description": "Please enter your input",
+                  "title": "Med Pick Up",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_21": {
+                  "description": "Please enter your input",
+                  "title": "Prop Pick Up",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_22": {
+                  "description": "Please enter your input",
+                  "title": "Special Needs",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_23": {
+                  "description": "Please enter your input",
+                  "title": "Bed Confirmed",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_24": {
+                  "description": "Please enter your input",
+                  "title": "Pick up Location",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_25": {
+                  "description": "Please enter your input",
+                  "title": "Active Medi-Cal",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_26": {
+                  "description": "Please enter your input",
+                  "title": "Medi-Cal Number",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_27": {
+                  "description": "Please enter your input",
+                  "title": "email",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_28": {
+                  "description": "Please enter your input",
+                  "title": "referralCompleted",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_29": {
+                  "description": "Please enter your input",
+                  "title": "Other Info",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_30": {
+                  "description": "Please enter your input",
+                  "title": "OtherCOR",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text_1",
+                "text",
+                "text_2",
+                "text_3",
+                "text_4",
+                "text_5",
+                "text_6",
+                "text_7",
+                "text_8",
+                "text_9",
+                "text_10",
+                "text_11",
+                "text_12",
+                "text_13",
+                "text_14",
+                "text_15",
+                "text_16",
+                "text_17",
+                "text_18",
+                "text_19",
+                "text_20",
+                "text_21",
+                "text_22",
+                "text_23",
+                "text_24",
+                "text_25",
+                "text_26",
+                "text_27",
+                "text_28",
+                "text_29",
+                "text_30"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "b8f61c18-7224-4f8a-9c5f-72fbce5df764"
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_Copilot": {
+          "type": "Response",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {}
+          },
+          "runAfter": {
+            "Send_an_email_(V2)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "81c94f73-dd52-465c-ad3b-a4686da63cc3"
+          }
+        },
+        "Get_files_(properties_only)": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/CopilotTest",
+              "table": "ec0c8324-d9bd-4235-bea9-3fe12359be31"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetFileItems",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Get_user_profile_(V2)": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Compose": {
+          "type": "Compose",
+          "inputs": "@length(outputs('Get_files_(properties_only)')?['body/value'])",
+          "runAfter": {
+            "Get_files_(properties_only)": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_file_content_using_path": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/CopilotTest",
+              "path": "/Transport Referral/Template.docx",
+              "inferContentType": true
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetFileContentByPath",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Initialize_variable": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "FileName",
+                "type": "string"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_file_content_using_path": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "greaterOrEquals": [
+                  "@outputs('Compose')",
+                  2
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Append_to_string_variable": {
+              "type": "AppendToStringVariable",
+              "inputs": {
+                "name": "fileName",
+                "value": "@{outputs('Get_user_profile_(V2)')?['body/displayName']}_TransportReferral_ @{formatDateTime(utcNow(), 'yyyyMMddTHHmmss')} .docx"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Create_file": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/CopilotTest",
+              "folderPath": "/Transport Referral",
+              "name": "@variables('FileName')",
+              "body": "@body('Get_file_content_using_path')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "CreateFile",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Condition": [
+              "Succeeded"
+            ]
+          },
+          "runtimeConfiguration": {
+            "contentTransfer": {
+              "transferMode": "Chunked"
+            }
+          }
+        },
+        "Apply_to_each": {
+          "type": "Foreach",
+          "foreach": "@outputs('Get_files_(properties_only)')?['body/value']",
+          "actions": {
+            "Update_file_properties": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://csula.sharepoint.com/sites/CopilotTest",
+                  "table": "ec0c8324-d9bd-4235-bea9-3fe12359be31",
+                  "id": "@outputs('Create_file')?['body/ItemId']",
+                  "item/Advocate": "@outputs('Get_user_profile_(V2)')?['body/displayName']",
+                  "item/Case_x0020_Number": "@triggerBody()?['text_3']",
+                  "item/ClientName": "@triggerBody()?['text_1']",
+                  "item/Release_x0020_Date": "@triggerBody()?['text']",
+                  "item/TRdate": "@formatDateTime(utcNow(), 'MM/dd/yy')",
+                  "item/Attorney1": "@variables('attorney')",
+                  "item/Bed_x0020_Availability": "@if(equals(toLower(triggerBody()?['text_2']), 'yes'), '☑', '☐')",
+                  "item/Case_x0020_Location": "@variables('caseLocation')",
+                  "item/Client_x0020_Phone": "@variables('clientPhone')",
+                  "item/Conditions_x0020_of_x0020_Release": "@variables('condtionsOfRelease')",
+                  "item/Custody_x0020_Status": "@variables('custodyStatus')",
+                  "item/DOB": "@variables('DOB')",
+                  "item/Language1": "@variables('language')",
+                  "item/Level_x0020_of_x0020_Charge": "@variables('chargeLevel')",
+                  "item/Sentence_x0020_Status": "@variables('sentenceStatus')",
+                  "item/SSN": "@variables('SSN')",
+                  "item/ActiveMedi_x002d_Cal": "@triggerBody()?['text_25']",
+                  "item/ArrivalDate": "@triggerBody()?['text_16']",
+                  "item/BedConfirmed": "@triggerBody()?['text_23']",
+                  "item/ContactNumber1": "@triggerBody()?['text_19']",
+                  "item/ContactPerson": "@triggerBody()?['text_17']",
+                  "item/DateFlex": "@triggerBody()?['text_18']",
+                  "item/Loca": "@triggerBody()?['text_15']",
+                  "item/MediCalNum": "@triggerBody()?['text_26']",
+                  "item/MedPickup": "@triggerBody()?['text_20']",
+                  "item/PickUpLocation": "@triggerBody()?['text_24']",
+                  "item/Program": "@triggerBody()?['text_14']",
+                  "item/PropPickUp": "@triggerBody()?['text_21']",
+                  "item/SpecialNeeds": "@triggerBody()?['text_22']",
+                  "item/Custody": "@variables('custodyStatus')",
+                  "item/AdvocateReferralNotCompleted": "@if(equals(toLower(triggerBody()?['text_28']), 'yes'), '☐', '☑')",
+                  "item/Other_x0020_Info": "@variables('OtherInfo')",
+                  "item/AdvocateReferralCompleted": "@if(equals(toLower(triggerBody()?['text_28']), 'yes'), '☑', '☐')",
+                  "item/OtherCOR": "@variables('Other COR')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "PatchFileItem",
+                  "connectionName": "shared_sharepointonline"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Create_file": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_file_content": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "https://csula.sharepoint.com/sites/CopilotTest",
+              "id": "@outputs('Create_file')?['body/Id']",
+              "inferContentType": true
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetFileContent",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Send_an_email_(V2)": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "emailMessage/To": "@outputs('Get_user_profile_(V2)')?['body/userPrincipalName']",
+              "emailMessage/Subject": "PDF Testing",
+              "emailMessage/Body": "<p class=\"editor-paragraph\">testing</p>",
+              "emailMessage/Attachments": [
+                {
+                  "Name": "@variables('FileName')",
+                  "ContentBytes": "@body('Get_file_content')"
+                }
+              ]
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+              "operationId": "SendEmailV2",
+              "connectionName": "shared_office365"
+            }
+          },
+          "runAfter": {
+            "Get_file_content": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Get_user_profile_(V2)": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "id": "@triggerBody()?['text_27']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+              "operationId": "UserProfile_V2",
+              "connectionName": "shared_office365users"
+            }
+          },
+          "runAfter": {
+            "Condition_2": [
+              "Succeeded"
+            ]
+          }
+        },
+        "DOB": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "DOB",
+                "type": "string",
+                "value": "@triggerBody()?['text_4']"
+              }
+            ]
+          },
+          "runAfter": {}
+        },
+        "SSN": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "SSN",
+                "type": "string",
+                "value": "@triggerBody()?['text_13']"
+              }
+            ]
+          },
+          "runAfter": {
+            "DOB": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Attorney": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "attorney",
+                "type": "string",
+                "value": "@triggerBody()?['text_12']"
+              }
+            ]
+          },
+          "runAfter": {
+            "SSN": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Custody_Status": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "custodyStatus",
+                "type": "string",
+                "value": "@triggerBody()?['text_6']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Attorney": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Language": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "language",
+                "type": "string",
+                "value": "@triggerBody()?['text_5']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Custody_Status": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Sentence_Status": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "sentenceStatus",
+                "type": "string",
+                "value": "@triggerBody()?['text_7']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Language": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Level_of_Charge": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "chargeLevel",
+                "type": "string",
+                "value": "@triggerBody()?['text_8']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Sentence_Status": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Case_Location": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "caseLocation",
+                "type": "string",
+                "value": "@triggerBody()?['text_9']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Level_of_Charge": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Client_Phone": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "clientPhone",
+                "type": "string",
+                "value": "@triggerBody()?['text_11']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Case_Location": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Conditions_of_Release_": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "condtionsOfRelease",
+                "type": "string",
+                "value": "@triggerBody()?['text_10']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Client_Phone": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_1": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@variables('DOB')",
+                  "Empty"
+                ]
+              },
+              {
+                "equals": [
+                  "@variables('SSN')",
+                  "Empty"
+                ]
+              },
+              {
+                "equals": [
+                  "@variables('attorney')",
+                  "Empty"
+                ]
+              },
+              {
+                "equals": [
+                  "@variables('custodyStatus')",
+                  "Empty"
+                ]
+              },
+              {
+                "equals": [
+                  "@variables('language')",
+                  "Empty"
+                ]
+              },
+              {
+                "equals": [
+                  "@variables('sentenceStatus')",
+                  "Empty"
+                ]
+              },
+              {
+                "equals": [
+                  "@variables('chargeLevel')",
+                  "Empty"
+                ]
+              },
+              {
+                "equals": [
+                  "@variables('caseLocation')",
+                  "Empty"
+                ]
+              },
+              {
+                "equals": [
+                  "@variables('clientPhone')",
+                  "Empty"
+                ]
+              },
+              {
+                "equals": [
+                  "@variables('condtionsOfRelease')",
+                  "Empty"
+                ]
+              },
+              {
+                "equals": [
+                  "@variables('Other COR')",
+                  "Empty"
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "DOB_update": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DOB",
+                "value": "@string('_')"
+              }
+            },
+            "SSN_update": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "SSN",
+                "value": "@string('_')"
+              },
+              "runAfter": {
+                "DOB_update": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Attorney_Update": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "attorney",
+                "value": "@string('_')"
+              },
+              "runAfter": {
+                "SSN_update": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Custody_Status_Update": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "custodyStatus",
+                "value": "@string('_')"
+              },
+              "runAfter": {
+                "Attorney_Update": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Language_Update": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "language",
+                "value": "@string('_')"
+              },
+              "runAfter": {
+                "Custody_Status_Update": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Sentence_Status_Update": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "sentenceStatus",
+                "value": "@string('_')"
+              },
+              "runAfter": {
+                "Language_Update": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Level_Of_Charge_Update": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "chargeLevel",
+                "value": "@string('_')"
+              },
+              "runAfter": {
+                "Sentence_Status_Update": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Case_Location_Update": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "caseLocation",
+                "value": "@string('_')"
+              },
+              "runAfter": {
+                "Level_Of_Charge_Update": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Client_Phone_Updated": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "clientPhone",
+                "value": "@string('_')"
+              },
+              "runAfter": {
+                "Case_Location_Update": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Conditions_of_Release_Updated": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "condtionsOfRelease",
+                "value": "@string('_')"
+              },
+              "runAfter": {
+                "Client_Phone_Updated": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Other_COR_Updated": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Other COR",
+                "value": "@string('_')"
+              },
+              "runAfter": {
+                "Conditions_of_Release_Updated": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Other_COR": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Other_COR": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Other COR",
+                "type": "string",
+                "value": "@triggerBody()?['text_30']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Conditions_of_Release_": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Other_Info": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "OtherInfo",
+                "type": "string",
+                "value": "@triggerBody()?['text_29']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Condition_1": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Condition_2": {
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@variables('OtherInfo')",
+                  "Empty"
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Set_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "OtherInfo",
+                "value": "@string('_')"
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Other_Info": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

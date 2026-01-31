@@ -1,0 +1,1082 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - transport referral
+      - need transport referral
+      - how to get a transport referral
+      - request transport service
+      - transportation assistance
+      - arrange transportation
+
+  actions:
+    - kind: SendActivity
+      id: KvIlS1
+      activity: Let's fill out a Transport Referral form. Please answers these questions.
+
+    - kind: Question
+      id: 0DaTMM
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.Var1
+      prompt: Is the Advocate Referral Completed?
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: Yes
+              displayName: Yes
+
+            - id: No
+              displayName: No
+
+    - kind: ConditionGroup
+      id: bF6U9F
+      conditions:
+        - id: CHITEu
+          condition: =Topic.Var1 = 'cr689_sbpdAssistant.topic.TransportReferral.main.0DaTMM'.Yes
+          actions:
+            - kind: AdaptiveCardPrompt
+              id: tLhnWX
+              card: |
+                {
+                    "type": "AdaptiveCard",
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "version": "1.4",
+                    "body": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Client Information Form",
+                            "weight": "Bolder",
+                            "size": "Medium"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Name:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "userName",
+                            "placeholder": "Enter full name"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Release Date:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.Date",
+                            "id": "releaseDate"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Case Number:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "caseNumber",
+                            "placeholder": "Enter case number"
+                        },
+                        {
+                            "type": "Input.Toggle",
+                            "id": "bedAvailability",
+                            "title": "Available",
+                            "valueOn": "yes",
+                            "valueOff": "no",
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "dob",
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "ssn",
+                            "placeholder": "Enter SSN",
+                            "style": "Password",
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "attorney",
+                            "placeholder": "Enter attorney's name",
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.ChoiceSet",
+                            "id": "custodyStatus",
+                            "style": "compact",
+                            "choices": [
+                                { "title": "In", "value": "In" },
+                                { "title": "Out", "value": "Out" }
+                            ],
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "language",
+                            "placeholder": "Enter preferred language",
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "clientPhone",
+                            "placeholder": "Enter phone number",
+                            "style": "Tel",
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.ChoiceSet",
+                            "id": "sentenceStatus",
+                            "style": "compact",
+                            "choices": [
+                                { "title": "Pre-Sentence", "value": "Pre Sentence" },
+                                { "title": "Sentenced", "value": "Sentenced" }
+                            ],
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.ChoiceSet",
+                            "id": "chargeLevel",
+                            "style": "compact",
+                            "choices": [
+                                { "title": "Misdemeanor", "value": "misdemeanor" },
+                                { "title": "Felony", "value": "felony" }
+                            ],
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.ChoiceSet",
+                            "id": "releaseConditions",
+                            "style": "compact",
+                            "choices": [
+                                { "title": "PTCO", "value": "ptco" },
+                                { "title": "GPS Monitoring", "value": "gps" },
+                                { "title": "SCRAM", "value": "scram" },
+                                { "title": "Other", "value": "other" }
+                            ],
+                            "isVisible": false
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "otherCondition",
+                            "placeholder": "Specify other condition...",
+                            "isVisible": false
+                        },
+                      
+                        {
+                            "type": "Input.ChoiceSet",
+                            "id": "caseLocation",
+                            "style": "compact",
+                            "choices": [
+                                { "title": "Santa Barbara", "value": "santaBarbara" },
+                                { "title": "Santa Monica", "value": "santaMonica" },
+                                { "title": "Lompoc", "value": "lompoc" }
+                            ],
+                            "isVisible": false
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "type": "Action.Submit",
+                            "title": "Submit"
+                        }
+                    ]
+                }
+              output:
+                binding:
+                  actionSubmitId: Topic.actionSubmitId
+                  attorney: Topic.attorney
+                  bedAvailability: Topic.bedAvailability
+                  caseLocation: Topic.caseLocation
+                  caseNumber: Topic.caseNumber
+                  chargeLevel: Topic.chargeLevel
+                  clientPhone: Topic.clientPhone
+                  custodyStatus: Topic.custodyStatus
+                  dob: Topic.dob
+                  language: Topic.language
+                  otherCondition: Topic.otherCondition
+                  releaseConditions: Topic.releaseConditions
+                  releaseDate: Topic.releaseDate
+                  sentenceStatus: Topic.sentenceStatus
+                  ssn: Topic.ssn
+                  userName: Topic.userName
+
+              outputType:
+                properties:
+                  actionSubmitId: String
+                  attorney: String
+                  bedAvailability: String
+                  caseLocation: String
+                  caseNumber: String
+                  chargeLevel: String
+                  clientPhone: String
+                  custodyStatus: String
+                  dob: String
+                  language: String
+                  otherCondition: String
+                  releaseConditions: String
+                  releaseDate: Date
+                  sentenceStatus: String
+                  ssn: String
+                  userName: String
+
+            - kind: SetVariable
+              id: setVariable_J7Crfs
+              variable: Topic.dob
+              value: Empty
+
+            - kind: SetVariable
+              id: setVariable_rs5496
+              variable: Topic.ssn
+              value: Empty
+
+            - kind: SetVariable
+              id: setVariable_m3XD6R
+              variable: Topic.attorney
+              value: Empty
+
+            - kind: SetVariable
+              id: setVariable_OZ0Vl7
+              variable: Topic.custodyStatus
+              value: Empty
+
+            - kind: SetVariable
+              id: HRoT8H
+              variable: Topic.language
+              value: Empty
+
+            - kind: SetVariable
+              id: setVariable_GWqHVV
+              variable: Topic.sentenceStatus
+              value: Empty
+
+            - kind: SetVariable
+              id: setVariable_Cd3K91
+              variable: Topic.chargeLevel
+              value: Empty
+
+            - kind: SetVariable
+              id: setVariable_2ufztU
+              variable: Topic.caseLocation
+              value: Empty
+
+            - kind: SetVariable
+              id: setVariable_ChOVS8
+              variable: Topic.clientPhone
+              value: Empty
+
+            - kind: SetVariable
+              id: setVariable_dTjHKi
+              variable: Topic.releaseConditions
+              value: Empty
+
+            - kind: SetVariable
+              id: setVariable_VSw2x5
+              variable: Topic.otherCondition
+              value: Empty
+
+            - kind: AdaptiveCardPrompt
+              id: 2ppFCt
+              card: |-
+                {
+                    "type": "AdaptiveCard",
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "version": "1.4",
+                    "body": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Transportation Information Form",
+                            "weight": "Bolder",
+                            "size": "Medium"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Program:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "program",
+                            "placeholder": "Enter program"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Location:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "location",
+                            "placeholder": "Enter location"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Date of Arrival:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.Date",
+                            "id": "arrival"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Contact Person:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "contact",
+                            "placeholder": "Enter contact name"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Contact Number:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "contactNum",
+                            "placeholder": "Enter contact number"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Flexibility of Date:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.ChoiceSet",
+                            "id": "dateFlexibility",
+                            "style": "compact",
+                            "choices": [
+                                {
+                                    "title": "Yes",
+                                    "value": "Yes"
+                                },
+                                {
+                                    "title": "No",
+                                    "value": "No"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Medication Pick Up Needed:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.ChoiceSet",
+                            "id": "medicationPickup",
+                            "style": "compact",
+                            "choices": [
+                                {
+                                    "title": "Yes",
+                                    "value": "Yes"
+                                },
+                                {
+                                    "title": "No",
+                                    "value": "No"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Property Pick Up Needed:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.ChoiceSet",
+                            "id": "propertyPickup",
+                            "style": "compact",
+                            "choices": [
+                                {
+                                    "title": "Yes",
+                                    "value": "Yes"
+                                },
+                                {
+                                    "title": "No",
+                                    "value": "No"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Special Needs for Program:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "specialNeeds",
+                            "placeholder": "Enter special needs"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Bed Confirmed:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.ChoiceSet",
+                            "id": "bedConfirmed",
+                            "style": "compact",
+                            "choices": [
+                                {
+                                    "title": "Yes",
+                                    "value": "Yes"
+                                },
+                                {
+                                    "title": "No",
+                                    "value": "No"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Active Medi-Cal:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.ChoiceSet",
+                            "id": "activeMediCal",
+                            "style": "compact",
+                            "choices": [
+                                {
+                                    "title": "Yes",
+                                    "value": "Yes"
+                                },
+                                {
+                                    "title": "No",
+                                    "value": "No"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Pick up Location:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "pickupLocation",
+                            "placeholder": "Enter pick up location"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Medi-Cal Number:",
+                            "wrap": true
+                        },
+                        {
+                            "type": "Input.Text",
+                            "id": "medical",
+                            "placeholder": "Enter medical number"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "type": "Action.Submit",
+                            "title": "Submit"
+                        }
+                    ]
+                }
+              output:
+                binding:
+                  actionSubmitId: Topic.actionSubmitId
+                  activeMediCal: Topic.activeMediCal
+                  arrival: Topic.arrival
+                  bedConfirmed: Topic.bedConfirmed
+                  contact: Topic.contact
+                  contactNum: Topic.contactNum
+                  dateFlexibility: Topic.dateFlexibility
+                  location: Topic.location
+                  medical: Topic.medical
+                  medicationPickup: Topic.medicationPickup
+                  pickupLocation: Topic.pickupLocation
+                  program: Topic.program
+                  propertyPickup: Topic.propertyPickup
+                  specialNeeds: Topic.specialNeeds
+
+              outputType:
+                properties:
+                  actionSubmitId: String
+                  activeMediCal: String
+                  arrival: Date
+                  bedConfirmed: String
+                  contact: String
+                  contactNum: String
+                  dateFlexibility: String
+                  location: String
+                  medical: String
+                  medicationPickup: String
+                  pickupLocation: String
+                  program: String
+                  propertyPickup: String
+                  specialNeeds: String
+
+      elseActions:
+        - kind: AdaptiveCardPrompt
+          id: 9xMeIR
+          card: |
+            {
+                "type": "AdaptiveCard",
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.4",
+                "body": [
+                    {
+                        "type": "TextBlock",
+                        "text": "Client Information ",
+                        "weight": "Bolder",
+                        "size": "Medium"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Name:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "userName",
+                        "placeholder": "Enter full name"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Release Date:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Date",
+                        "id": "releaseDate"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Bed Availability:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Toggle",
+                        "id": "bedAvailability",
+                        "title": "Available",
+                        "valueOn": "yes",
+                        "valueOff": "no"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Case Number:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "caseNumber",
+                        "placeholder": "Enter case number"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Date of Birth (DOB):",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "dob",
+                        "placeholder": "Enter DOB (mm/dd/yy)"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Social Security Number:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "ssn",
+                        "placeholder": "Enter SSN"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Attorney Name:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "attorney",
+                        "placeholder": "Enter attorney's name"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Custody Status:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.ChoiceSet",
+                        "id": "custodyStatus",
+                        "style": "compact",
+                        "choices": [
+                            { "title": "In", "value": "In" },
+                            { "title": "Out", "value": "Out" }
+                        ]
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Preferred Language:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "language",
+                        "placeholder": "Enter preferred language"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Client Phone Number:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "clientPhone",
+                        "placeholder": "Enter phone number",
+                        "style": "Tel"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Sentence Status:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.ChoiceSet",
+                        "id": "sentenceStatus",
+                        "style": "compact",
+                        "choices": [
+                            { "title": "Pre-Sentence", "value": "Pre-Sentence" },
+                            { "title": "Sentenced", "value": "Sentenced" }
+                        ]
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Level of Charge:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.ChoiceSet",
+                        "id": "chargeLevel",
+                        "style": "compact",
+                        "choices": [
+                            { "title": "Misdemeanor", "value": "Misdemeanor" },
+                            { "title": "Felony", "value": "Felony" }
+                        ]
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Conditions of Release:",
+                        "wrap": true
+                    },
+                   {
+                        "type": "Input.ChoiceSet",
+                        "id": "releaseConditions",
+                        "style": "compact",
+                        "choices": [
+                            { "title": "PTCO", "value": "ptco" },
+                            { "title": "GPS Monitoring", "value": "gps" },
+                            { "title": "SCRAM", "value": "scram" },
+                            { "title": "Other", "value": "other" }
+                        ]
+                        
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "otherCondition",
+                        "placeholder": "Specify other condition."
+                        
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Case Location:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.ChoiceSet",
+                        "id": "caseLocation",
+                        "style": "compact",
+                        "choices": [
+                            { "title": "Santa Barbara", "value": "Santa Barbara" },
+                            { "title": "Santa Monica", "value": "Santa Monica" },
+                            { "title": "Lompoc", "value": "Lompoc" }
+                        ]
+                    }
+                ],
+                "actions": [
+                    {
+                        "type": "Action.Submit",
+                        "title": "Submit"
+                    }
+                ]
+            }
+          output:
+            binding:
+              actionSubmitId: Topic.actionSubmitId
+              attorney: Topic.attorney
+              bedAvailability: Topic.bedAvailability
+              caseLocation: Topic.caseLocation
+              caseNumber: Topic.caseNumber
+              chargeLevel: Topic.chargeLevel
+              clientPhone: Topic.clientPhone
+              custodyStatus: Topic.custodyStatus
+              dob: Topic.dob
+              language: Topic.language
+              otherCondition: Topic.otherCondition
+              releaseConditions: Topic.releaseConditions
+              releaseDate: Topic.releaseDate
+              sentenceStatus: Topic.sentenceStatus
+              ssn: Topic.ssn
+              userName: Topic.userName
+
+          outputType:
+            properties:
+              actionSubmitId: String
+              attorney: String
+              bedAvailability: String
+              caseLocation: String
+              caseNumber: String
+              chargeLevel: String
+              clientPhone: String
+              custodyStatus: String
+              dob: String
+              language: String
+              otherCondition: String
+              releaseConditions: String
+              releaseDate: Date
+              sentenceStatus: String
+              ssn: String
+              userName: String
+
+        - kind: ConditionGroup
+          id: conditionGroup_7w4l46
+          conditions:
+            - id: conditionItem_gNMkwz
+              condition: =IsBlank(Topic.otherCondition)
+              actions:
+                - kind: SetVariable
+                  id: setVariable_wDVpSf
+                  variable: Topic.otherCondition
+                  value: N/A
+
+        - kind: AdaptiveCardPrompt
+          id: x0Yyz8
+          card: |-
+            {
+                "type": "AdaptiveCard",
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.4",
+                "body": [
+                    {
+                        "type": "TextBlock",
+                        "text": "Transportation Information ",
+                        "weight": "Bolder",
+                        "size": "Medium"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Program:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "program",
+                        "placeholder": "Enter program"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Location:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "location",
+                        "placeholder": "Enter location"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Date of Arrival:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Date",
+                        "id": "arrival"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Contact Person:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "contact",
+                        "placeholder": "Enter contact name"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Contact Number:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "contactNum",
+                        "placeholder": "Enter contact number"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Flexibility of Date:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.ChoiceSet",
+                        "id": "dateFlexibility",
+                        "style": "compact",
+                        "choices": [
+                            {
+                                "title": "Yes",
+                                "value": "Yes"
+                            },
+                            {
+                                "title": "No",
+                                "value": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Medication Pick Up Needed:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.ChoiceSet",
+                        "id": "medicationPickup",
+                        "style": "compact",
+                        "choices": [
+                            {
+                                "title": "Yes",
+                                "value": "Yes"
+                            },
+                            {
+                                "title": "No",
+                                "value": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Property Pick Up Needed:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.ChoiceSet",
+                        "id": "propertyPickup",
+                        "style": "compact",
+                        "choices": [
+                            {
+                                "title": "Yes",
+                                "value": "Yes"
+                            },
+                            {
+                                "title": "No",
+                                "value": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Special Needs for Program:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "specialNeeds",
+                        "placeholder": "Enter special needs"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Bed Confirmed:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.ChoiceSet",
+                        "id": "bedConfirmed",
+                        "style": "compact",
+                        "choices": [
+                            {
+                                "title": "Yes",
+                                "value": "Yes"
+                            },
+                            {
+                                "title": "No",
+                                "value": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Active Medi-Cal:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.ChoiceSet",
+                        "id": "activeMediCal",
+                        "style": "compact",
+                        "choices": [
+                            {
+                                "title": "Yes",
+                                "value": "Yes"
+                            },
+                            {
+                                "title": "No",
+                                "value": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Pick up Location:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "pickupLocation",
+                        "placeholder": "Enter pick up location"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Medi-Cal Number:",
+                        "wrap": true
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "medical",
+                        "placeholder": "Enter medical number"
+                    }
+                ],
+                "actions": [
+                    {
+                        "type": "Action.Submit",
+                        "title": "Submit"
+                    }
+                ]
+            }
+          output:
+            binding:
+              actionSubmitId: Topic.actionSubmitId
+              activeMediCal: Topic.activeMediCal
+              arrival: Topic.arrival
+              bedConfirmed: Topic.bedConfirmed
+              contact: Topic.contact
+              contactNum: Topic.contactNum
+              dateFlexibility: Topic.dateFlexibility
+              location: Topic.location
+              medical: Topic.medical
+              medicationPickup: Topic.medicationPickup
+              pickupLocation: Topic.pickupLocation
+              program: Topic.program
+              propertyPickup: Topic.propertyPickup
+              specialNeeds: Topic.specialNeeds
+
+          outputType:
+            properties:
+              actionSubmitId: String
+              activeMediCal: String
+              arrival: Date
+              bedConfirmed: String
+              contact: String
+              contactNum: String
+              dateFlexibility: String
+              location: String
+              medical: String
+              medicationPickup: String
+              pickupLocation: String
+              program: String
+              propertyPickup: String
+              specialNeeds: String
+
+    - kind: Question
+      id: question_4AY0O6
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.Var2
+      prompt: Is there any information not listed
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          items:
+            - id: Yes
+              displayName: Yes
+
+            - id: No
+              displayName: No
+
+    - kind: SetVariable
+      id: setVariable_Ai79yU
+      variable: Topic.Var3
+      value: Empty
+
+    - kind: ConditionGroup
+      id: conditionGroup_FnOmge
+      conditions:
+        - id: conditionItem_HXHRPS
+          condition: =Topic.Var2 = 'cr689_sbpdAssistant.topic.TransportReferral.main.question_4AY0O6'.Yes
+          actions:
+            - kind: Question
+              id: question_oifFLs
+              interruptionPolicy:
+                allowInterruption: true
+
+              variable: Topic.Var3
+              prompt: Please input other information
+              entity: StringPrebuiltEntity
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_guTAI1
+      input:
+        binding:
+          text: =Text(Topic.releaseDate)
+          text_1: =Topic.userName
+          text_10: =Topic.releaseConditions
+          text_11: =Topic.clientPhone
+          text_12: =Topic.attorney
+          text_13: =Topic.ssn
+          text_14: =Topic.program
+          text_15: =Topic.location
+          text_16: =Text(Topic.arrival)
+          text_17: =Topic.contact
+          text_18: =Topic.dateFlexibility
+          text_19: =Topic.contactNum
+          text_2: =Topic.bedAvailability
+          text_20: =Topic.medicationPickup
+          text_21: =Topic.propertyPickup
+          text_22: =Topic.specialNeeds
+          text_23: =Topic.bedConfirmed
+          text_24: =Topic.pickupLocation
+          text_25: =Topic.activeMediCal
+          text_26: =Topic.medical
+          text_27: =System.User.PrincipalName
+          text_28: =Text(Topic.Var1)
+          text_29: =Topic.Var3
+          text_3: =Topic.caseNumber
+          text_30: =Topic.otherCondition
+          text_4: =Text(Topic.dob)
+          text_5: =Topic.language
+          text_6: =Topic.custodyStatus
+          text_7: =Topic.sentenceStatus
+          text_8: =Topic.chargeLevel
+          text_9: =Topic.caseLocation
+
+      output: {}
+      flowId: 61f41291-0460-1eed-d55e-4575bcc3aa47
+
+    - kind: SendActivity
+      id: m8H7q8
+      activity: Thank you for providing the details. We will process your transport referral form. An Email has also been sent to you.
+
+inputType: {}
+outputType: {}

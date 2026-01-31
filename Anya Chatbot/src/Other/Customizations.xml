@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.25034.226" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.25034.00226">
+  <Entities />
+  <Roles />
+  <Workflows />
+  <FieldSecurityProfiles />
+  <Templates />
+  <EntityMaps />
+  <EntityRelationships />
+  <OrganizationSettings />
+  <optionsets />
+  <CustomControls />
+  <EntityDataProviders />
+  <AIModels>
+    <AIModel>
+      <msdyn_aimodelid>{eb43c678-3a63-46bd-abb4-6ed8354671b7}</msdyn_aimodelid>
+      <msdyn_name>Parse Ticket</msdyn_name>
+      <msdyn_templateid>{edfdb190-3791-45d8-9a6c-8f90a37c278a}</msdyn_templateid>
+      <statecode>1</statecode>
+      <statuscode>1</statuscode>
+      <IsCustomizable>1</IsCustomizable>
+      <msdyn_activerunconfigurationid>{042e1064-bd70-426f-98c8-b31a44ee7fb3}</msdyn_activerunconfigurationid>
+      <AIConfigurations>
+        <AIConfiguration>
+          <msdyn_aiconfigurationid>{042e1064-bd70-426f-98c8-b31a44ee7fb3}</msdyn_aiconfigurationid>
+          <msdyn_customconfiguration>{"version":"GptDynamicPrompt-2","prompt":[{"type":"literal","text":"Please parse the given text into 3 separate parts: a ticket name (brief string that summarizes the issue), a cleaned ticket body (as close to the original user text as possible, removing the request for help and any prompt that refers to the chatbot, e.g. can you help), and a category (from the list \"General Help\", \"eDefender\", \"Case Request\").\n\nThe format of your response should be JSON, and it should name the ticket name as \"title\", the body as \"body\" and the category as \"type\".\n\nHere's the given text from the user:\n"},{"type":"inputVariable","id":"UserMessage"},{"type":"literal","text":" "}],"definitions":{"inputs":[{"id":"UserMessage","text":"UserMessage","type":"text","quickTestValue":"I need to get access to the case video for case number 12345. Can you file a ticket?"}],"data":[],"output":{"formats":["json"],"jsonSchema":{"type":"object","properties":{"title":{"type":"string"},"body":{"type":"string"},"type":{"type":"string"}}},"jsonExamples":[{"title":"Access to Case Video","body":"I need to get access to the case video for case number 12345.","type":"Case Request"}]}},"modelParameters":{"modelType":"default","gptParameters":{"temperature":0}},"settings":{"recordRetrievalLimit":30,"shouldPreserveRecordLinks":null,"runtime":null}}</msdyn_customconfiguration>
+          <msdyn_majoriterationnumber>2</msdyn_majoriterationnumber>
+          <msdyn_minoriterationnumber>0</msdyn_minoriterationnumber>
+          <msdyn_name>eb43c678-3a63-46bd-abb4-6ed8354671b7_3/21/2025 3:10:23 PM</msdyn_name>
+          <msdyn_modelrundataspecification>H4sIAAAAAAAACpWRzU7DMBCEXwXt2RekikNupbQSB4jUv/sm2Raj1La8a6lR1XcnjouosA/g4+z4m1n7AhtH7cr6E8qePGtroHpU8GpckLW1sjSiZYDqAi+aXY/DO54IKgAFcxGvmyDEcbxj8m/EjEfK3fdDBbWTMQd7qA7YMynYDi66NiPPHOGqALtOJ8/CGqGz5Mh5ZrkHiw8/3Gdkepp9068jvw7y3/3KLbYpOFvgoI3mjzUhxwf9fWs1TR9u48J1Hvu3Ejx1qWlE3Ex180ltzPx7cy194U+SXAhvbFfATmrBLZOQwaOaudP5Aqb9ie90AgAA</msdyn_modelrundataspecification>
+          <msdyn_type>190690001</msdyn_type>
+          <msdyn_aimodelid>{eb43c678-3a63-46bd-abb4-6ed8354671b7}</msdyn_aimodelid>
+          <msdyn_trainedmodelaiconfigurationpareid>{451a470f-1c06-f011-bae1-7c1e520c2c51}</msdyn_trainedmodelaiconfigurationpareid>
+          <statecode>2</statecode>
+          <statuscode>7</statuscode>
+          <IsCustomizable>1</IsCustomizable>
+          <msdyn_templateversion>1</msdyn_templateversion>
+        </AIConfiguration>
+        <AIConfiguration>
+          <msdyn_aiconfigurationid>{451a470f-1c06-f011-bae1-7c1e520c2c51}</msdyn_aiconfigurationid>
+          <msdyn_majoriterationnumber>1</msdyn_majoriterationnumber>
+          <msdyn_minoriterationnumber>0</msdyn_minoriterationnumber>
+          <msdyn_modeldata>6fa01f30-deda-4692-bd72-3ceefafa19ca</msdyn_modeldata>
+          <msdyn_name>Parse Ticket_3/21/2025 6:16:45 AM</msdyn_name>
+          <msdyn_modelrundataspecification>
+        {
+          "schemaVersion": 2,
+          "input": {},
+          "output": {}
+        }
+      </msdyn_modelrundataspecification>
+          <msdyn_type>190690000</msdyn_type>
+          <msdyn_aimodelid>{eb43c678-3a63-46bd-abb4-6ed8354671b7}</msdyn_aimodelid>
+          <statecode>2</statecode>
+          <statuscode>6</statuscode>
+          <IsCustomizable>1</IsCustomizable>
+          <msdyn_templateversion>1</msdyn_templateversion>
+        </AIConfiguration>
+      </AIConfigurations>
+    </AIModel>
+  </AIModels>
+  <connectionreferences>
+    <connectionreference connectionreferencelogicalname="cr689_sbpdAssistant.shared_sharepointonline.78666f8440f7430cb5add85210c61a56">
+      <connectionreferencedisplayname>cr689_sbpdAssistant.shared_sharepointonline.78666f8440f7430cb5add85210c61a56</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_sharepointonline</connectorid>
+      <iscustomizable>0</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+  </connectionreferences>
+  <Languages>
+    <Language>1033</Language>
+  </Languages>
+</ImportExportXml>

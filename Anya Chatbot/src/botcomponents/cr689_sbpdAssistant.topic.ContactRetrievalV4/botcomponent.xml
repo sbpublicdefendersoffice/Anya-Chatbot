@@ -1,0 +1,11 @@
+<botcomponent schemaname="cr689_sbpdAssistant.topic.ContactRetrievalV4">
+  <componenttype>9</componenttype>
+  <description>User will input a name to retrieve contact information from the user from Office 365 organization.</description>
+  <iscustomizable>0</iscustomizable>
+  <name>Contact Retrieval V3</name>
+  <parentbotid>
+    <schemaname>cr689_sbpdAssistant</schemaname>
+  </parentbotid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</botcomponent>
